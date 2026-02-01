@@ -181,50 +181,40 @@ function changePage(dir) {
 window.analyzeWithAI = async function (issueId, btn) {
     const detailsDiv = document.getElementById(`ai-details-${issueId}`);
 
-    // CLOSE
+    // Toggle close
     if (btn.dataset.open === "true") {
-        detailsDiv.classList.add("hidden");
+        detailsDiv.style.display = "none";
         btn.dataset.open = "false";
         btn.innerText = "Analyze with AI";
         return;
     }
 
-    // OPEN (already loaded)
-    if (btn.dataset.loaded === "true") {
-        detailsDiv.classList.remove("hidden");
-        btn.dataset.open = "true";
-        btn.innerText = "Hide AI Analysis";
-        return;
-    }
-
-    // FIRST TIME FETCH
+    // Always fetch fresh data when opening
     btn.disabled = true;
     btn.innerText = "Analyzing...";
-
     try {
         const res = await fetch(`${API_BASE}/api/aianalysis/${issueId}`, { method: 'POST' });
         if (!res.ok) throw new Error('AI analysis failed');
         const data = await res.json();
-        // Show AI details for this row only
-        const detailsDiv = document.getElementById(`ai-details-${issueId}`);
         if (detailsDiv && data.aianalysis) {
             detailsDiv.style.display = '';
             detailsDiv.innerHTML = `
-                        <div class=\"text-xs text-left\">
-                            <div class=\"mb-1\"><span class=\"font-bold\">AI Priority:</span> <span class=\"inline-block px-2 py-0.5 rounded-full ${data.aianalysis.priority === 'High' ? 'bg-red-100 text-red-700' :
-                    data.aianalysis.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-green-100 text-green-700'}\">${data.aianalysis.priority}</span></div>
-                            <div class=\"mb-1\"><span class=\"font-bold\">AI Recommendation:</span> ${data.aianalysis.recommendation}</div>
-                            <div><span class=\"font-bold\">AI Reason:</span> ${data.aianalysis.reason}</div>
-                        </div>
-                    `;
+                <div class="text-xs text-left">
+                    <div class="mb-1"><span class="font-bold">AI Priority:</span> <span class="inline-block px-2 py-0.5 rounded-full ${data.aianalysis.priority === 'High' ? 'bg-red-100 text-red-700' :
+                data.aianalysis.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-green-100 text-green-700'}">${data.aianalysis.priority}</span></div>
+                    <div class="mb-1"><span class="font-bold">AI Recommendation:</span> ${data.aianalysis.recommendation}</div>
+                    <div><span class="font-bold">AI Reason:</span> ${data.aianalysis.reason}</div>
+                </div>
+            `;
+            btn.dataset.open = "true";
+            btn.innerText = "Hide AI Analysis";
         }
     } catch (err) {
         alert('AI analysis failed.');
         console.error(err);
     } finally {
         btn.disabled = false;
-        btn.innerText = 'Analyze with AI';
     }
 }
 
