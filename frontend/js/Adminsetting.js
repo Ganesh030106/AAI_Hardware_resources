@@ -4,8 +4,6 @@
 // ADMIN SETTINGS PAGE SCRIPT
 // ==========================================
 
-import { showToast } from './Toast.js';
-
 // API BASE URL
 const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
 

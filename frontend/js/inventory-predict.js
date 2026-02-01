@@ -1,5 +1,8 @@
 // inventory-predict.js
 // Fetches and displays inventory demand prediction for admin
+
+let showToast; // will be dynamically imported on page load
+
 const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
 
 document.addEventListener('DOMContentLoaded', () => {

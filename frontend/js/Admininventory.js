@@ -3,6 +3,8 @@
 /* ==========================================
    ADMIN INVENTORY PAGE SCRIPT
 ========================================== */
+let showToast; // will be dynamically imported on page load
+
 // --- EXPORT FUNCTIONS ---
 function openExportModal() {
     const modal = document.getElementById('exportModal');

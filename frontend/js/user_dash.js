@@ -7,6 +7,9 @@
 //API BASE URL
 const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
 
+let showToast; // will be dynamically imported on page load
+
+
 // --- 1. AUTHENTICATION & USER CHECK ---
 const user = JSON.parse(sessionStorage.getItem("user"));
 

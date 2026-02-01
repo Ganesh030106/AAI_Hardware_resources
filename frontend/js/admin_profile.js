@@ -5,6 +5,8 @@
 // ==========================================
 
 const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
+let showToast; // will be dynamically imported on page load
+
 
 // --- 1. SETUP DATE ---
 function formatDate(date) {

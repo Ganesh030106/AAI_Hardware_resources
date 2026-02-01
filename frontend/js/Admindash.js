@@ -10,6 +10,8 @@ const API_BASE = "https://app-aai-hardware-resources-backend.onrender.com";
 
 let currentUser = null;
 let empId = null;
+let showToast; // will be dynamically imported on page load
+
 
 // Get user data from sessionStorage
 const storedUser = sessionStorage.getItem('user');

@@ -15,12 +15,6 @@ const requestSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  // // AI Analysis field for rule-based protocol
-  // aianalysis: {
-  //   priority: { type: String, enum: ["Low", "Medium", "High"], default: "Low" },
-  //   recommendation: { type: String, default: "" },
-  //   reason: { type: String, default: "" }
-  // }
 }, {
   versionKey: false,
   collection: "hardware_requests"

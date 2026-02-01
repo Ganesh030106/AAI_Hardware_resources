@@ -6,6 +6,8 @@
 
 //API BASE URL
 const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
+let showToast; // will be dynamically imported on page load
+
 
 // Show/Hide custom date picker
 document.getElementById('dateRange').addEventListener('change', function () {

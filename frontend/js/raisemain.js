@@ -7,6 +7,9 @@
 //API BASE URL
 const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
 
+let showToast; // will be dynamically imported on page load
+
+
 // 1. Sidebar Active State
 const links = document.querySelectorAll(".sidebar-link");
 links.forEach(link => {

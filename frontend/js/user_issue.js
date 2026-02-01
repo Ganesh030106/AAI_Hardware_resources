@@ -7,6 +7,9 @@
 //API BASE URL
 const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
 
+let showToast; // will be dynamically imported on page load
+
+
 // --- API & CONFIG ---
 const API_URL = `${API_BASE}/api/issue-requests/user`; // GET /api/issue-requests/user/:emp_id
 let allRequests = [];

@@ -6,6 +6,8 @@
 //
 const API_BASE= "https://app-aai-hardware-resources-backend.onrender.com";
 
+let showToast; // will be dynamically imported on page load
+
 // Modal display functions
 function showTermsModal() {
     const modal = document.getElementById('termsModal');

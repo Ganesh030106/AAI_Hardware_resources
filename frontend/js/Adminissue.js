@@ -11,6 +11,8 @@ let currentPage = 1;
 const limit = 5;
 let totalItems = 0;
 let searchTimeout = null;
+let showToast; // will be dynamically imported on page load
+
 
 // --- AUTH CHECK & SIDEBAR UPDATE ---
 

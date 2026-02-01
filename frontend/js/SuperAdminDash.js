@@ -7,6 +7,9 @@
 //API BASE URL
 const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
 
+let showToast; // will be dynamically imported on page load
+
+
 // --- API ENDPOINTS ---
 const API_URLS = {
     GET_USERS: `${API_BASE}/api/superadmin/users`,

@@ -1,7 +1,5 @@
 //frontend/js/user_set.js 
 
-import { showToast } from './Toast.js';
-
 // ==========================================
 // USER SETTINGS PAGE SCRIPT
 
