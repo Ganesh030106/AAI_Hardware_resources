@@ -179,11 +179,29 @@ function changePage(dir) {
     loadIssues(currentPage + dir);
 }
 
-// ---------------- AI ANALYSIS (TOGGLE + COLOR) ----------------
+// Render AI Button based on Technician status & Priority
+window.renderAIButton = function(issueId, techStatus, priority) {
+    const btn = document.getElementById(`ai-btn-${issueId}`);
+    if (!btn) return;
+
+    // Show button only if Technician is Unassigned AND priority is Pending
+    if (techStatus.toLowerCase() === "unassigned" && priority.toLowerCase() === "pending") {
+        btn.style.display = "inline-block";
+        btn.disabled = false;
+        btn.innerText = "Analyze with AI";
+    } else {
+        btn.style.display = "none";
+    }
+}
+
+// --- AI ANALYSIS HANDLER ---
 window.analyzeWithAI = async function (issueId, btn) {
     const detailsDiv = document.getElementById(`ai-details-${issueId}`);
 
-    // Toggle close
+    // Prevent multiple clicks
+    if (btn.dataset.running === "true") return;
+
+    // Toggle close if already open
     if (btn.dataset.open === "true") {
         detailsDiv.style.display = "none";
         btn.dataset.open = "false";
@@ -191,35 +209,50 @@ window.analyzeWithAI = async function (issueId, btn) {
         return;
     }
 
-    // Always fetch fresh data when opening
+    btn.dataset.running = "true";
     btn.disabled = true;
     btn.innerText = "Analyzing...";
+
     try {
         const res = await fetch(`${API_BASE}/api/aianalysis/${issueId}`, { method: 'POST' });
-        if (!res.ok) throw new Error('AI analysis failed');
         const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'AI analysis failed');
+
         if (detailsDiv && data.aianalysis) {
             detailsDiv.style.display = '';
             detailsDiv.innerHTML = `
                 <div class="text-xs text-left">
-                    <div class="mb-1"><span class="font-bold">AI Priority:</span> <span class="inline-block px-2 py-0.5 rounded-full ${data.aianalysis.priority === 'High' ? 'bg-red-100 text-red-700' :
-                data.aianalysis.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-green-100 text-green-700'}">${data.aianalysis.priority}</span></div>
+                    <div class="mb-1"><span class="font-bold">AI Priority:</span> 
+                        <span class="inline-block px-2 py-0.5 rounded-full ${
+                            data.aianalysis.priority === 'High' ? 'bg-red-100 text-red-700' :
+                            data.aianalysis.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-green-100 text-green-700'
+                        }">${data.aianalysis.priority}</span>
+                    </div>
                     <div class="mb-1"><span class="font-bold">AI Recommendation:</span> ${data.aianalysis.recommendation}</div>
-                    <div><span class="font-bold">AI Reason:</span> ${data.aianalysis.reason}</div>
+                    <div class="mb-1"><span class="font-bold">AI Reason:</span> ${data.aianalysis.reason}</div>
                 </div>
             `;
+
+            // Mark button as open
             btn.dataset.open = "true";
             btn.innerText = "Hide AI Analysis";
+
+            // Auto-hide button if Technician is now assigned
+            const issueTechStatus = document.getElementById(`tech-status-${issueId}`)?.innerText || "";
+            if (issueTechStatus.toLowerCase() === "assigned") {
+                btn.style.display = "none";
+            }
         }
+
     } catch (err) {
-        alert('AI analysis failed.');
+        alert(err.message);
         console.error(err);
     } finally {
         btn.disabled = false;
+        btn.dataset.running = "false";
     }
 }
-
 
 // --- LOAD FILTER OPTIONS ---
 
