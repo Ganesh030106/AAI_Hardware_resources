@@ -10,43 +10,59 @@ const User = require("../model/users");
 //      AI ANALYSIS ENDPOINT (GENERAL RULES)
 // ==========================================
 
+// POST /api/aianalysis/:id
 router.post("/:id", async (req, res) => {
     try {
         const issue = await IssueRequest.findById(req.params.id);
-        if (!issue) return res.status(404).json({ message: "Issue not found" });
-
-        // Only analyze if priority is Pending
-        if (issue.priority.toLowerCase() !== "pending") {
-            return res.status(400).json({ message: "AI analysis only available for Pending issues." });
+        if (!issue) {
+            return res.status(404).json({ message: "Issue not found" });
         }
 
-        // Default AI analysis
+        // 🔒 SINGLE BACKEND RESTRICTION (ONLY THIS)
+        if (
+            !issue.technician_status ||
+            issue.technician_status.toLowerCase() !== "unassigned"
+        ) {
+            return res.status(403).json({
+                message: "AI analysis is allowed only when technician is unassigned."
+            });
+        }
+
+        // -------------------------------
+        // GLOBAL RULE-BASED AI ANALYSIS
+        // -------------------------------
         let aiPriority = "Low";
         let aiRecommendation = "Monitor";
-        let aiReason = "No critical impact detected.";
+        let aiReason = "No critical indicators detected.";
 
-        // Fetch user for department
-        const user = await User.findOne({ emp_id: issue.emp_id });
-        const issueText = ((issue.issue || "") + " " + (issue.issue_description || "")).toLowerCase();
         const category = (issue.category || "").toLowerCase();
+        const combinedText = (
+            (issue.issue || "") +
+            " " +
+            (issue.issue_description || "") +
+            " " +
+            (issue.priority || "")
+        ).toLowerCase();
 
-        // Rule 1: Critical keywords or category
-        if (issueText.match(/critical|urgent|bsod|overheating|failure/) || category.includes("network") || category.includes("server")) {
+        // 🔥 Critical keywords
+        if (/critical|urgent|bsod|overheating|crash|failure|down|not working/.test(combinedText)) {
             aiPriority = "High";
-            aiRecommendation = "Assign technician / Review";
-            aiReason = "Issue likely to impact productivity or critical systems.";
+            aiRecommendation = "Immediate technician assignment recommended.";
+            aiReason = "Critical keywords detected indicating high impact.";
         }
-        // Rule 2: Medium severity keywords
-        else if (issueText.match(/error|slow|warning/)) {
+
+        // ⚠️ Warning keywords
+        else if (/slow|error|lag|disconnect|warning|intermittent/.test(combinedText)) {
             aiPriority = "Medium";
-            aiRecommendation = "Assign technician";
-            aiReason = "Issue may affect user workflow; technician assignment recommended.";
+            aiRecommendation = "Assign technician for inspection.";
+            aiReason = "Potential productivity impact detected.";
         }
-        // Rule 3: Default Low
-        else {
-            aiPriority = "Low";
-            aiRecommendation = "Monitor";
-            aiReason = "No immediate action required.";
+
+        // 🌐 Category escalation
+        if (category.includes("network") || category.includes("server")) {
+            if (aiPriority === "Low") aiPriority = "Medium";
+            aiRecommendation = "Check network/server configuration and logs.";
+            aiReason += " Issue relates to critical infrastructure.";
         }
 
         // Save AI analysis
@@ -56,25 +72,19 @@ router.post("/:id", async (req, res) => {
             reason: aiReason
         };
 
-        // ✅ FIX ENUM CASE ISSUE
-        if (issue.technician_status) {
-            issue.technician_status =
-                issue.technician_status.charAt(0).toUpperCase() +
-                issue.technician_status.slice(1).toLowerCase();
-        }
-
         await issue.save();
 
         res.json({
-            aianalysis: issue.aianalysis,
-            message: "AI analysis completed and saved."
+            message: "AI analysis completed successfully.",
+            aianalysis: issue.aianalysis
         });
 
     } catch (err) {
-        console.error("AI Analysis error:", err);
-        res.status(500).json({ message: err.message });
+        console.error("AI Analysis Error:", err);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 
 module.exports = router;
+
 

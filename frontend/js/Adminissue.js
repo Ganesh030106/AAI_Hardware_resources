@@ -184,8 +184,8 @@ window.renderAIButton = function(issueId, techStatus, priority) {
     const btn = document.getElementById(`ai-btn-${issueId}`);
     if (!btn) return;
 
-    // Show button only if Technician is Unassigned AND priority is Pending
-    if (techStatus.toLowerCase() === "unassigned" && priority.toLowerCase() === "pending") {
+    // Show button only if Technician is Unassigned 
+    if (techStatus.toLowerCase() === "unassigned") {
         btn.style.display = "inline-block";
         btn.disabled = false;
         btn.innerText = "Analyze with AI";
