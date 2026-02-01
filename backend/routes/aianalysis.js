@@ -18,19 +18,19 @@ router.post("/:id", async (req, res) => {
             return res.status(404).json({ message: "Issue not found" });
         }
 
-        // 🔒 SINGLE BACKEND RESTRICTION (ONLY THIS)
+        // 🔒 ONLY restriction (FINAL)
         if (
             !issue.technician_status ||
             issue.technician_status.toLowerCase() !== "unassigned"
         ) {
             return res.status(403).json({
-                message: "AI analysis is allowed only when technician is unassigned."
+                message: "AI analysis allowed only when technician is unassigned"
             });
         }
 
-        // -------------------------------
-        // GLOBAL RULE-BASED AI ANALYSIS
-        // -------------------------------
+        // ✅ NO priority restriction
+        // ✅ NO department restriction
+
         let aiPriority = "Low";
         let aiRecommendation = "Monitor";
         let aiReason = "No critical indicators detected.";
@@ -44,28 +44,24 @@ router.post("/:id", async (req, res) => {
             (issue.priority || "")
         ).toLowerCase();
 
-        // 🔥 Critical keywords
-        if (/critical|urgent|bsod|overheating|crash|failure|down|not working/.test(combinedText)) {
+        // 🔥 Keyword escalation
+        if (/critical|urgent|crash|down|failure|not working/.test(combinedText)) {
             aiPriority = "High";
             aiRecommendation = "Immediate technician assignment recommended.";
-            aiReason = "Critical keywords detected indicating high impact.";
+            aiReason = "Critical keywords detected.";
         }
-
-        // ⚠️ Warning keywords
-        else if (/slow|error|lag|disconnect|warning|intermittent/.test(combinedText)) {
+        else if (/slow|error|lag|disconnect/.test(combinedText)) {
             aiPriority = "Medium";
-            aiRecommendation = "Assign technician for inspection.";
-            aiReason = "Potential productivity impact detected.";
+            aiRecommendation = "Technician inspection advised.";
+            aiReason = "Performance-related issue detected.";
         }
 
-        // 🌐 Category escalation
+        // 🌐 Category-based boost
         if (category.includes("network") || category.includes("server")) {
             if (aiPriority === "Low") aiPriority = "Medium";
-            aiRecommendation = "Check network/server configuration and logs.";
-            aiReason += " Issue relates to critical infrastructure.";
+            aiReason += " Related to critical infrastructure.";
         }
 
-        // Save AI analysis
         issue.aianalysis = {
             priority: aiPriority,
             recommendation: aiRecommendation,
@@ -75,7 +71,7 @@ router.post("/:id", async (req, res) => {
         await issue.save();
 
         res.json({
-            message: "AI analysis completed successfully.",
+            message: "AI analysis completed",
             aianalysis: issue.aianalysis
         });
 
@@ -84,6 +80,7 @@ router.post("/:id", async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
+
 
 module.exports = router;
 

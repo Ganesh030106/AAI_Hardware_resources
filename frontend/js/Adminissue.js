@@ -105,9 +105,17 @@ function renderTable(issues) {
         const isPriorityAssigned = priority !== 'pending';
         const canAssignTechnician = isOtherHardware ? isPriorityAssigned : true;
 
-        // AI Analysis rendering
-        let aiHtml = `<button onclick=\"analyzeWithAI('${issue._id}', this)\" class=\"px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold mb-2\">Analyze with AI</button>`;
-        aiHtml += `<div id=\"ai-details-${issue._id}\" style=\"display:none;\"></div>`;
+        let aiHtml = "";
+
+        if ((issue.technician_status || "").toLowerCase() === "unassigned") {
+            aiHtml = `
+        <button 
+            onclick="analyzeWithAI('${issue._id}', this)"
+            class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold mb-2">
+            Analyze with AI
+        </button>
+        <div id="ai-details-${issue._id}" style="display:none;"></div>`;
+        }
 
         const row = `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
@@ -180,7 +188,7 @@ function changePage(dir) {
 }
 
 // Render AI Button based on Technician status & Priority
-window.renderAIButton = function(issueId, techStatus, priority) {
+window.renderAIButton = function (issueId, techStatus, priority) {
     const btn = document.getElementById(`ai-btn-${issueId}`);
     if (!btn) return;
 
@@ -223,11 +231,10 @@ window.analyzeWithAI = async function (issueId, btn) {
             detailsDiv.innerHTML = `
                 <div class="text-xs text-left">
                     <div class="mb-1"><span class="font-bold">AI Priority:</span> 
-                        <span class="inline-block px-2 py-0.5 rounded-full ${
-                            data.aianalysis.priority === 'High' ? 'bg-red-100 text-red-700' :
-                            data.aianalysis.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-green-100 text-green-700'
-                        }">${data.aianalysis.priority}</span>
+                        <span class="inline-block px-2 py-0.5 rounded-full ${data.aianalysis.priority === 'High' ? 'bg-red-100 text-red-700' :
+                    data.aianalysis.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-green-100 text-green-700'
+                }">${data.aianalysis.priority}</span>
                     </div>
                     <div class="mb-1"><span class="font-bold">AI Recommendation:</span> ${data.aianalysis.recommendation}</div>
                     <div class="mb-1"><span class="font-bold">AI Reason:</span> ${data.aianalysis.reason}</div>
