@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ==========================================
+     ADMIN PROFILE PAGE
+     ==========================================
+     Admin user profile viewing and editing
+     Features: View profile details, edit information, role display
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>AAI Hardware Maintenance - Admin Profile Dashboard</title>
+
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/logo.jpeg" type="image/jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/output.css">
+    <link rel="stylesheet" href="../css/custom.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!window.Chart) {
+                const s = document.createElement('script');
+                s.src = '../js/chart.min.js';
+                document.body.appendChild(s);
+            }
+        });
+    </script>
+
+
+    <!-- Theme Config -->
+    <script src="../config.js" defer></script>
+
+    <!-- Toast -->
+    <script src="../js/Toast.js" defer></script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    <script src="../js/admin_profile.js" defer></script>
+    
+    <!-- SECTION: Layout shell (sidebar + profile content) -->
+    <div class="flex h-screen w-full">
+
+        <!-- SECTION: Sidebar navigation  -->
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-slate-800 border-r border-border-light dark:border-slate-700 flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="../assets/logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="./Ad-dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Admin Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="./Ad-dash.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="./Ad-ticket.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">confirmation_number</span>
+                    <span class="text-sm font-medium">Request Management</span>
+                </a>
+                <a href="./Ad-inventory.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="./Ad-settings.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="./Ad-profile_dashboard.html"
+                class="animated-btn border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        <img id="sidebar-avatar" class="object-cover w-full h-full"
+                            src="https://via.placeholder.com/150" alt="Profile" />
+                    </div>
+                    <div class="flex flex-col overflow-hidden">
+                        <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                        <p id="sidebar-role" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                            ...</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <!-- Profile main content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <!-- Top Header -->
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
+                <!-- Search -->
+                <div class="flex items-center w-full max-w-md">
+                    <div class="relative w-full">
+                    </div>
+                </div>
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <button id="dateButton"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText"></span>
+                    </button>
+                    <button onclick="handleLogout()"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 dark:bg-red-500 hover:bg-red-600 dark:hover:bg-red-700 text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <div class="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-900 p-6 lg:p-10">
+                <div class="max-w-4xl mx-auto flex flex-col gap-8">
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="relative w-24 h-24 rounded-full overflow-hidden border-4 border-blue-600">
+                                <img id="main-avatar-img" src="https://via.placeholder.com/150" alt="User Avatar"
+                                    class="object-cover w-full h-full">
+                            </div>
+                            <div>
+                                <h2 id="display-name"
+                                    class="text-3xl font-bold text-text-main-light dark:text-text-main-dark">Loading...
+                                </h2>
+                                <p id="display-role" class="text-text-muted-light dark:text-text-muted-dark mt-1">...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div
+                            class="card-hover bg-card-light dark:bg-slate-900 rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">Personal
+                                Information</h3>
+                            <ul class="text-text-muted-light dark:text-text-muted-dark space-y-2">
+                                <li><strong>Employee ID:</strong> <span id="display-emp-id">...</span></li>
+                                <li><strong>Username:</strong> <span id="display-username">...</span></li>
+                                <li><strong>Department:</strong> <span id="display-dept">...</span></li>
+                            </ul>
+                        </div>
+
+                        <div
+                            class="card-hover bg-card-light dark:bg-slate-900 rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">Security &
+                                Settings</h3>
+                            <ul class="text-text-muted-light dark:text-text-muted-dark space-y-2">
+                                <li><strong>Password:</strong> ******** <button
+                                        onclick="window.location.href='./Ad-settings.html'"
+                                        class="text-blue-600 hover:text-blue-600-hover ml-2 text-sm">Change</button>
+                                </li>
+                                <li><strong>Last Login:</strong> <span id="display-last-login">Loading...</span></li>
+                            </ul>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                            <div class="rounded-xl p-4 bg-white dark:bg-slate-800 border">
+                                <p class="text-xs text-text-muted-light">Role</p>
+                                <p class="text-lg font-bold" id="stat-role">—</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center text-xs text-text-muted-light dark:text-text-muted-dark pb-4">
+                © 2026 AAI Hardware Maintenance System. All rights reserved.
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>

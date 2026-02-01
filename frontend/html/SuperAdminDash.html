@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperAdmin Dashboard | Master Control</title>
+
+    <link rel="icon" href="../assets/logo.jpeg" type="image/jpeg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="../css/output.css">
+    <link rel="stylesheet" href="../css/custom.css">
+
+    <script src="../config.js" defer></script>
+</head>
+
+<body class="bg-bg-light dark:bg-bg-dark text-slate-800 dark:text-white font-display antialiased">
+    <script src="../js/SuperAdminDash.js" defer></script>
+
+    <div class="flex h-screen w-full overflow-hidden">
+
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0">
+                <div class="p-6 flex items-center gap-3">
+                    <div class="p-2 rounded-lg flex items-center justify-center bg-blue-50 dark:bg-blue-900/20">
+                        <span class="material-symbols-outlined text-primary">admin_panel_settings</span>
+                    </div>
+                    <div>
+                        <h1 class="text-base font-bold leading-none tracking-tight">SuperAdmin</h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Master Portal</p>
+                    </div>
+                </div>
+                <div class="relative w-full max-w-xl">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">search</span>
+                    <input id="searchInput" onkeyup="filterTable()"
+                        class="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-100 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm transition-all"
+                        placeholder="Search users by Name, ID or Username..." type="text" />
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="logout()"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-6 lg:p-10">
+                <div class="max-w-7xl mx-auto flex flex-col gap-8">
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                            Super Admin System Overview
+                        </h2>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1">Manage users, administrators, and roles.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div
+                            class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-2">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span
+                                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+                                    <span class="material-symbols-outlined text-[24px]">group</span>
+                                </span>
+                                <span
+                                    class="ml-auto text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-full dark:bg-slate-700 dark:text-slate-300">Total</span>
+                            </div>
+                            <span class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Accounts</span>
+                            <span id="totalUsers" class="text-3xl font-bold text-slate-900 dark:text-white">0</span>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-2">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span
+                                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400">
+                                    <span class="material-symbols-outlined text-[24px]">shield_person</span>
+                                </span>
+                            </div>
+                            <span class="text-slate-500 dark:text-slate-400 text-sm font-medium">Administrators</span>
+                            <span id="totalAdmins" class="text-3xl font-bold text-slate-900 dark:text-white">0</span>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-2">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span
+                                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400">
+                                    <span class="material-symbols-outlined text-[24px]">badge</span>
+                                </span>
+                            </div>
+                            <span class="text-slate-500 dark:text-slate-400 text-sm font-medium">Standard
+                                Employees</span>
+                            <span id="totalEmployees" class="text-3xl font-bold text-slate-900 dark:text-white">0</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+                        <div
+                            class="p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[24px]">table_view</span>
+                                User Directory
+                            </h3>
+                            <button onclick="fetchUsers()"
+                                class="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">refresh</span> Refresh
+                            </button>
+                            <!-- Add User Button -->
+                            <div class="flex justify-end mt-4">
+                                <button onclick="openAddUserModal()"
+                                    class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium shadow-md shadow-blue-500/20 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]">person_add</span>
+                                    Add User
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-900 dark:text-white">
+                                <thead
+                                    class="bg-slate-50 dark:bg-bg-dark text-xs uppercase font-bold text-slate-500 dark:text-slate-400">
+                                    <tr>
+                                        <th class="px-6 py-4">Emp ID</th>
+                                        <th class="px-6 py-4">Name</th>
+                                        <th class="px-6 py-4">Department</th>
+                                        <th class="px-6 py-4">Username</th>
+                                        <th class="px-6 py-4">Role</th>
+                                        <th class="px-6 py-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-8 text-center text-slate-500">Loading data...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="resetModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-700 transform transition-all duration-300 scale-95 opacity-0" id="resetModalContent">
+            <h3 class="text-xl font-bold mb-2">Quick Password Reset</h3>
+            <p id="modalUserText" class="text-sm text-slate-500 mb-6">Updating user credentials</p>
+
+            <div class="relative group flex items-center">
+                <input type="password" id="newPasswordInput"
+                    class="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none mb-6"
+                    placeholder="Enter new password">
+                <button
+                    class="absolute right-3.5 inset-y-0 my-auto text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 cursor-pointer flex items-center transition-colors"
+                    type="button" onclick="togglePasswordVisibility(this, 'newPasswordInput')"
+                    aria-label="Toggle password visibility" title="Show/hide password">
+                    <span class="material-symbols-outlined text-[20px]">visibility_off</span>
+                </button>
+            </div>
+
+            <div class="flex gap-3 justify-end">
+                <button onclick="closeResetModal()"
+                    class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 font-medium">Cancel</button>
+                <button onclick="submitPasswordReset()"
+                    class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium shadow-md shadow-blue-500/20">Update
+                    Password</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editUserModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200 dark:border-slate-700 transform transition-all duration-300 scale-95 opacity-0" id="editUserModalContent">
+            <h3 class="text-xl font-bold mb-2">Edit User Details</h3>
+            <p class="text-sm text-slate-500 mb-6">Update information for this account</p>
+
+            <input type="hidden" id="editUserId">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name
+                        <input type="text" id="editName"
+                            class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                    </label>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Emp ID
+                            <input type="text" id="editEmpId"
+                                class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                        </label>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Department
+                            <input type="text" id="editDept"
+                                class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Username
+                        <input type="text" id="editUsername"
+                            class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex gap-3 justify-end mt-8">
+                <button onclick="closeEditModal()"
+                    class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 font-medium">Cancel</button>
+                <button onclick="submitUserUpdate()"
+                    class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium shadow-md shadow-blue-500/20">Save
+                    Changes</button>
+            </div>
+        </div>
+    </div>
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200 dark:border-slate-700 transform transition-all duration-300 scale-95 opacity-0" id="addUserModalContent">
+            <h3 class="text-xl font-bold mb-2">Add New User</h3>
+            <p class="text-sm text-slate-500 mb-6">Fill in details to create a new Employee or Admin account.</p>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name
+                        <input type="text" id="addName"
+                            class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                    </label>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Emp ID
+                            <input type="text" id="addEmpId"
+                                class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                        </label>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Department
+                            <input type="text" id="addDept"
+                                class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Username
+                        <input type="text" id="addUsername"
+                            class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                    </label>
+                </div>
+                <div class="relative group">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Password
+                        <input type="password" id="addPassword"
+                            class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                        <button type="button"
+                            class="absolute right-3.5 top-9 -translate-y-1/2 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 cursor-pointer flex items-center transition-colors"
+                            onclick="togglePasswordVisibility(this, 'addPassword')"
+                            aria-label="Toggle password visibility" title="Show/hide password">
+                            <span class="material-symbols-outlined text-[20px]">visibility_off</span>
+                        </button>
+                    </label>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Role
+                        <select id="addRole"
+                            class="w-full px-4 py-2 rounded-lg bg-slate-50 dark:bg-bg-dark border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none dark:text-white">
+                            <option value="Employee">Employee</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end mt-8">
+                <button onclick="closeAddUserModal()"
+                    class="px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 font-medium">Cancel</button>
+                <button onclick="submitAddUser()"
+                    class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 font-medium shadow-md shadow-green-500/20">Add
+                    User</button>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>

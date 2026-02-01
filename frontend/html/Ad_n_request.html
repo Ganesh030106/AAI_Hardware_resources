@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<!-- ==========================================
+     ADMIN NEW REQUEST PAGE
+     ==========================================
+     Interface for admins to create new hardware requests
+     Features: Hardware selection, quantity input, request submission
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>AAI Hardware Maintenance - Admin New Inventory Request </title>
+
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/logo.jpeg" type="image/jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/output.css">
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!window.Chart) {
+                const s = document.createElement('script');
+                s.src = '../js/chart.min.js';
+                document.body.appendChild(s);
+            }
+        });
+    </script>
+
+
+    <!-- Theme Config -->
+    <script src="../config.js" defer></script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    <script src="../js/Admin_n_req.js" defer></script>
+
+    <div class="flex h-screen w-full">
+
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="../assets/logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="./Ad-dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Admin Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="./Ad-dash.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="./Ad-ticket.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">confirmation_number</span>
+                    <span class="text-sm font-medium">Request Management</span>
+                </a>
+                <a href="./Ad-inventory.html"
+                    class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="./Ad-settings.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="./Ad-profile_dashboard.html"
+                class="animated-btn border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        <img id="sidebar-avatar" alt="Admin user profile picture" class="object-cover w-full h-full"
+                            src="https://ui-avatars.com/api/?name=Admin&background=random" />
+                    </div>
+                    <div class="flex flex-col overflow-hidden">
+                        <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                        <p id="sidebar-role" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                            ...</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <main
+            class="flex-1 flex flex-col h-screen overflow-y-auto bg-background-light dark:bg-background-dark relative">
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+                <div class="flex items-center w-full max-w-md">
+                    <div class="relative w-full">
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="dateButton"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText"></span>
+                    </button>
+                    <button onclick="handleLogout()"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <div class="flex-1 w-full max-w-[1440px] mx-auto px-4 md:px-10 py-8 flex flex-col gap-6">
+                <div class="flex flex-col md:flex-row flex-wrap justify-between gap-4 items-start md:items-center">
+                    <div class="flex flex-col gap-1">
+                        <h1
+                            class="text-[#0d121b] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">
+                            Add New Item
+                        </h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
+                            Register new hardware into the system database.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6 sm:px-6">
+            <div class="absolute inset-0 bg-slate-900/30 backdrop-blur-sm transition-opacity"></div>
+            <div
+                class="relative w-full max-w-2xl transform rounded-xl bg-white dark:bg-slate-900 text-left shadow-2xl transition-all flex flex-col max-h-[90vh] border border-slate-200 dark:border-slate-800">
+                <div
+                    class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Add New Inventory Item</h2>
+                    <button onclick="window.location.href='./Ad-inventory.html'"
+                        class="flex size-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-500 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-symbols-outlined text-[24px]">close</span>
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-6 scrollbar-hide">
+                    <form class="grid grid-cols-1 md:grid-cols-2 gap-6" onsubmit="event.preventDefault();">
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                                Item Name <span class="text-red-500">*</span>
+                                <div class="flex gap-2">
+                                    <select id="item-name"
+                                        class="flex-1 rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-sm">
+                                        <option value="">-- Select Item or Add New --</option>
+                                    </select>
+                                    <button type="button" onclick="toggleNewItemMode()"
+                                        class="px-4 py-2.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]"
+                                            style="display:inline-block; vertical-align: middle;">add</span>
+                                    </button>
+                                </div>
+                            </label>
+                            <input id="item-name-new" placeholder="e.g. Laptop" style="display:none; margin-top:8px;"
+                                class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 placeholder:text-slate-400 shadow-sm"
+                                type="text" />
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Brand -
+                                SKU Model <span class="text-red-500">*</span>
+                                <div class="flex gap-2">
+                                    <select id="item-model"
+                                        class="flex-1 rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-sm">
+                                        <option value="">-- Select Model or Add New --</option>
+                                    </select>
+                                    <button type="button" onclick="toggleNewModelMode()"
+                                        class="px-4 py-2.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]"
+                                            style="display:inline-block; vertical-align: middle;">add</span>
+                                    </button>
+                                </div>
+                            </label>
+                            <input id="item-model-new" placeholder="e.g. Dell Latitude 7490"
+                                style="display:none; margin-top:8px;"
+                                class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 placeholder:text-slate-400 shadow-sm"
+                                type="text" />
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Supplier
+                                Name <span class="text-red-500">*</span>
+                                <div class="flex gap-2">
+                                    <select id="item-supplier"
+                                        class="flex-1 rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-sm">
+                                        <option value="">-- Select Supplier or Add New --</option>
+                                    </select>
+                                    <button type="button" onclick="toggleNewSupplierMode()"
+                                        class="px-4 py-2.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]"
+                                            style="display:inline-block; vertical-align: middle;">add</span>
+                                    </button>
+                                </div>
+                            </label>
+                            <input id="item-supplier-new" placeholder="e.g. Dell India"
+                                style="display:none; margin-top:8px;"
+                                class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 placeholder:text-slate-400 shadow-sm"
+                                type="text" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Supplier
+                                Phone
+                                <input id="supplier-phone"
+                                    class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 placeholder:text-slate-400 shadow-sm"
+                                    placeholder="e.g. 9876543210" type="number" />
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">GST
+                                Number
+                                <input id="gst-number"
+                                    class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 placeholder:text-slate-400 shadow-sm"
+                                    placeholder="e.g. 22AAAAA0000A1Z5" type="text" />
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Seller
+                                ID <span class="text-red-500">*</span>
+                                <select id="seller_id"
+                                    class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-sm">
+                                    <option value="">-- Select Seller ID --</option>
+                                </select>
+                                <input id="seller_id_auto" readonly style="display:none; margin-top:8px;"
+                                    class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-2.5 text-sm shadow-sm cursor-not-allowed"
+                                    placeholder="Auto-generated" type="text" />
+                                <p id="seller_id_note" style="display:none; margin-top:4px;"
+                                    class="text-xs text-slate-500 dark:text-slate-400">
+                                    Seller ID will be auto-generated for new supplier
+                                </p>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Quantity
+                                <span class="text-red-500">*</span>
+                                <input id="quantity" required
+                                    class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 placeholder:text-slate-400 shadow-sm"
+                                    placeholder="e.g. 10" type="number" min="1" value="1" />
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Arrival
+                                Date
+                                <div class="relative">
+                                    <input id="arrival_date"
+                                        class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 placeholder:text-slate-400 shadow-sm appearance-none"
+                                        type="date" />
+                                </div>
+                            </label>
+                        </div>
+
+                    </form>
+                </div>
+                <div
+                    class="flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 px-6 py-4 rounded-b-xl">
+                    <button onclick="window.location.href='./Ad-inventory.html'"
+                        class="px-5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
+                        Cancel
+                    </button>
+                    <button onclick="addNewItem()"
+                        class="px-5 py-2.5 rounded-lg bg-blue-600 text-sm font-semibold text-white hover:bg-blue-600 transition-colors shadow-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                        Add Item
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

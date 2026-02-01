@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ==========================================
+     USER DASHBOARD PAGE
+     ==========================================
+     Main user dashboard with personal statistics and activity
+     Features: Stats overview, recent requests, quick actions
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AAI Hardware Maintenance - User Dashboard</title>
+
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/logo.jpeg" type="image/jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/output.css">
+    <link rel="stylesheet" href="../css/custom.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!window.Chart) {
+                const s = document.createElement('script');
+                s.src = '../js/chart.min.js';
+                document.body.appendChild(s);
+            }
+        });
+    </script>
+
+    <!-- Theme Config -->
+    <script src="../config.js" defer></script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-slate-900 text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    <script src="../js/user_dash.js" defer></script>
+    <div class="flex h-screen w-full">
+
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-slate-800 border-r border-border-light dark:border-slate-700 flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="../assets/logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="./user_dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-slate-300 mt-1">User Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="./user_dash.html"
+                    class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="./MyRequest.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-slate-300 hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">assignment</span>
+                    <span class="text-sm font-medium">My Requests</span>
+                </a>
+                <a href="./user_issue.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-slate-300 hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">build</span>
+                    <span class="text-sm font-medium">Issue Requests</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-slate-700"></div>
+                <a href="./Settings.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-slate-300 hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="./profile_dashboard.html"
+                class="animated-btn gap-4 border-t border-border-light dark:border-slate-700 block">
+                <div
+                    class="flex items-center gap-3 p-4 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                        style="background-image: url('https://ui-avatars.com/api/?name=User&background=random');"
+                        id="sidebar-avatar">
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-0">
+                        <p id="sidebar-username"
+                            class="text-sm font-bold text-text-main-light dark:text-text-main-dark truncate">
+                            Loading...</p>
+                        <p id="sidebar-dept" class="text-xs text-text-muted-light dark:text-slate-300 truncate">
+                            Department</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+            <!-- Header -->
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-slate-800 border-b border-border-light dark:border-slate-700 flex-shrink-0">
+                <div class="flex items-center w-full max-w-md">
+                    <div class="flex items-center gap-2 text-text-muted-light dark:text-slate-300 text-sm">
+                        <a href="./user_dash.html"
+                            class="material-symbols-outlined text-[24px] hover:text-blue-600 transition-colors">home</a>Dashboard</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="ToggleBtn"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-slate-900 text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+                        <span id="themeText"></span>
+                    </button>
+                    <button id="dateButton"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText"></span>
+                    </button>
+                    <button onclick="handleLogout()"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+                <div class="max-w-7xl mx-auto flex flex-col gap-8">
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 id="welcome-text"
+                                class="text-3xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark">
+                                Welcome back</h2>
+                            <p class="text-text-muted-light dark:text-slate-300 mt-1">
+                                Track your hardware requests and status updates.
+                            </p>
+                        </div>
+                        <a href="./user_request.html">
+                            <button
+                                class="animated-btn glow-blue-600 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg shadow-sm shadow-blue-600/30 transition-all text-sm font-bold dark:bg-blue-600 dark:hover:bg-blue-700 dark:shadow-blue-800/50">
+                                <span class="material-symbols-outlined text-[20px]">add</span>
+                                New Request
+                            </button>
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div
+                            class="bg-card-light dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col justify-between h-36 relative overflow-hidden group hover:bg-blue-50/50 dark:hover:bg-blue-900/10 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-default">
+                            <div
+                                class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                                <span class="material-symbols-outlined text-[120px]">confirmation_number</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg text-blue-600 dark:text-blue-400 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
+                                    <span class="material-symbols-outlined">confirmation_number</span>
+                                </div>
+                                <p class="font-medium text-text-secondary-light dark:text-text-secondary-dark">Total
+                                    Tickets
+                                </p>
+                            </div>
+                            <div class="flex items-baseline gap-2 mt-4">
+                                <h3 id="total-tickets-count"
+                                    class="text-4xl font-bold text-text-blue-600-light dark:text-text-blue-600-dark">0
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-card-light dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col justify-between h-36 relative overflow-hidden group hover:bg-red-50/50 dark:hover:bg-red-900/10 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-default">
+                            <div
+                                class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                                <span class="material-symbols-outlined text-[120px]">cancel</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="bg-red-100 dark:bg-red-900/30 p-3 rounded-lg text-red-600 dark:text-red-400 group-hover:bg-red-200 dark:group-hover:bg-red-800 transition-colors">
+                                    <span class="material-symbols-outlined">cancel</span>
+                                </div>
+                                <p class="font-medium text-text-secondary-light dark:text-text-secondary-dark">Rejected
+                                    Requests
+                                </p>
+                            </div>
+                            <div class="flex items-baseline gap-2 mt-4">
+                                <h3 id="rejected-tickets-count"
+                                    class="text-4xl font-bold text-text-blue-600-light dark:text-text-blue-600-dark">0
+                                </h3>
+                                <span
+                                    class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Rejected</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-card-light dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col justify-between h-36 relative overflow-hidden group hover:bg-green-50/50 dark:hover:bg-green-900/10 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-default">
+                            <div
+                                class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                                <span class="material-symbols-outlined text-[120px]">check_circle</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg text-green-600 dark:text-green-400 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors">
+                                    <span class="material-symbols-outlined">check_circle</span>
+                                </div>
+                                <p class="font-medium text-text-secondary-light dark:text-text-secondary-dark">Completed
+                                    Services</p>
+                            </div>
+                            <div class="flex items-baseline gap-2 mt-4">
+                                <h3 id="completed-tickets-count"
+                                    class="text-4xl font-bold text-text-blue-600-light dark:text-text-blue-600-dark">0
+                                </h3>
+                                <span
+                                    class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Resolved</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-card-light dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm border border-border-light dark:border-slate-700 flex flex-col md:flex-row relative group">
+
+                        <div class="p-8 md:p-10 flex flex-col justify-center gap-4 flex-1 z-20">
+                            <div
+                                class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-full w-fit">
+                                <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                                <span class="text-xs font-bold uppercase tracking-wider"> Support </span>
+                            </div>
+                            <h2
+                                class="text-2xl md:text-3xl font-bold text-text-main-light dark:text-text-main-dark tracking-tight">
+                                Need assistance?
+                            </h2>
+                            <p class="text-text-muted-light dark:text-slate-300 text-lg max-w-xl">
+                                Submit a new maintenance request to get immediate support from our technicians.
+                            </p>
+                            <div class="mt-2">
+                                <a href="./raise_main.html">
+                                    <button
+                                        class="animated-btn glow-blue-600 inline-flex items-center justify-center h-10 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all shadow-lg shadow-blue-600/30 dark:bg-blue-600 dark:hover:bg-blue-700 dark:shadow-blue-800/50">
+                                        Raise New Maintenance Request
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative w-full md:w-5/12 min-h-[220px] md:min-h-full overflow-hidden flex items-center justify-center bg-blue-50/30 dark:bg-blue-900/5">
+
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-card-light via-card-light/50 to-transparent dark:from-card-dark dark:via-card-dark/50 z-10 pointer-events-none">
+                            </div>
+
+                            <div
+                                class="relative w-full h-full transform transition-transform duration-700 group-hover:scale-105">
+
+                                <svg class="absolute -top-10 -right-10 w-48 h-48 text-gray-200 dark:text-gray-800 opacity-50 animate-[spin_10s_linear_infinite]"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                                    <path fill-rule="evenodd"
+                                        d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z"
+                                        clip-rule="evenodd" opacity="0" />
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.51-3.49L17.5 6.5 9.99 9.99 6.5 17.5zm5.5-6.6c.61 0 1.1.49 1.1 1.1s-.49 1.1-1.1 1.1-1.1-.49-1.1-1.1.49-1.1 1.1-1.1z" />
+                                </svg>
+
+                                <svg class="absolute top-8 right-1/3 w-24 h-24 text-blue-100 dark:text-blue-900/40"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M6 4h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2zm2 4v8h8V8H8z" />
+                                    <path d="M2 9h2v6H2zM20 9h2v6h-2zM9 2v2h6V2zM9 20v2h6v-2z" />
+                                </svg>
+
+                                <svg class="absolute bottom-4 right-16 w-36 h-36 text-blue-200 dark:text-blue-800 drop-shadow-md transform translate-x-4"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M4 3a2 2 0 012-2h12a2 2 0 012 2v18a2 2 0 01-2 2H6a2 2 0 01-2-2V3zm2 2v4h12V5H6zm0 6v4h12v-4H6zm0 6v4h12v-4H6z" />
+                                    <circle cx="8" cy="7" r="1" class="text-blue-400 dark:text-blue-500"
+                                        fill="currentColor" />
+                                    <circle cx="8" cy="13" r="1" class="text-blue-400 dark:text-blue-500"
+                                        fill="currentColor" />
+                                    <circle cx="8" cy="19" r="1" class="text-green-400" fill="currentColor" />
+                                </svg>
+
+                                <svg class="absolute -bottom-2 -right-2 w-28 h-28 text-blue-600/30 dark:text-blue-600/40"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M13.7 2.29a1 1 0 00-1.4 1.4l2.29 2.29a1 1 0 001.4-1.4l-2.29-2.29zM18.7 7.29a1 1 0 00-1.4 1.4l2.29 2.29a1 1 0 001.4-1.4l-2.29-2.29zM6 13a1 1 0 00-1.4 1.4l10 10a1 1 0 001.4-1.4l-10-10zM17 11a1 1 0 100-2 1 1 0 000 2z" />
+                                    <path d="M7 2l10 10-3 3-10-10z"
+                                        class="text-blue-300 dark:text-blue-700 opacity-50" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-slate-800 backdrop-blur rounded-xl border border-border-light dark:border-slate-800 overflow-hidden shadow-sm">
+                        <div
+                            class="p-6 border-b border-border-light dark:border-slate-700 flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark">
+                                <span class="material-symbols-outlined align-middle text-[40px]">history</span>
+                                Recent Activity
+                            </h3>
+                            <a id="view-all-link" href="javascript:void(0)" onclick="toggleRecentActivity()"
+                                class="text-sm font-semibold text-blue-600 hover:text-blue-600-hover flex items-center gap-1">
+                                View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-text-muted-light dark:text-slate-300">
+                                <thead
+                                    class="bg-background-light dark:bg-slate-700 text-xs uppercase font-bold text-text-main-light dark:text-text-main-dark">
+                                    <tr>
+                                        <th class="px-6 py-4">Request ID</th>
+                                        <th class="px-6 py-4">Asset Name (Asset_ID)</th>
+                                        <th class="px-6 py-4">Quantity</th>
+                                        <th class="px-6 py-4">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activity-table-body" class="border-border-light dark:border-slate-700">
+                                    <tr>
+                                        <td colspan="4"
+                                            class="px-6 py-8 text-center text-text-muted-light dark:text-slate-300">
+                                            Loading recent requests...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 text-center text-xs text-text-muted-light dark:text-slate-300 pb-4">
+                    © 2026 AAI Hardware Maintenance System. All rights reserved.
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

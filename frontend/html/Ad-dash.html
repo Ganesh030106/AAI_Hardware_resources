@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>AAI Hardware Maintenance - Admin Dashboard</title>
+
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/logo.jpeg" type="image/jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/output.css">
+    <link rel="stylesheet" href="../css/custom.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!window.Chart) {
+                const s = document.createElement('script');
+                s.src = '/js/chart.min.js';
+                document.body.appendChild(s);
+            }
+        });
+    </script>
+
+
+    <!-- Theme Config -->
+    <script src="../config.js" defer></script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-slate-900 text-text-main-light dark:text-text-main-dark font-display antialiased">
+    <script src="../js/Admindash.js" defer></script>
+    <div class="flex h-screen w-full">
+
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-slate-800 border-r border-border-light dark:border-slate-700 flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="../assets/logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="./Ad-dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Admin Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="./Ad-dash.html"
+                    class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#1658e5] text-white font-bold">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="./Ad-ticket.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#f4f6fa] dark:hover:bg-[#232e42] transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">confirmation_number</span>
+                    <span class="text-sm font-medium">Request Management</span>
+                </a>
+                <a href="./Ad-inventory.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#f4f6fa] dark:hover:bg-[#232e42] transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <div class="my-2 border-t border-gray-200 dark:border-gray-200"></div>
+                <a href="./Ad-settings.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#f4f6fa] dark:hover:bg-[#232e42] transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="./Ad-profile_dashboard.html"
+                class="animated-btn border-t border-gray-200 dark:border-[#232e42] block">
+                <div
+                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-[#f4f6fa] dark:hover:bg-[#232e42] cursor-pointer transition-colors">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        <img id="sidebar-avatar" alt="Admin user profile picture" class="object-cover w-full h-full"
+                            src="https://ui-avatars.com/api/?name=Admin&background=random" />
+                    </div>
+                    <div class="flex flex-col overflow-hidden">
+                        <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                        <p id="sidebar-role" class="text-xs text-gray-500 dark:text-gray-400 truncate">...</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
+                <div class="relative w-full max-w-xl">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">search</span>
+                    <input id="dashboard-search" onkeyup="filterDashboardTable()"
+                        class="w-full pl-10 pr-4 py-2 rounded-lg bg-[#f4f6fa] dark:bg-[#101622] border border-gray-200 dark:border-[#232e42] focus:ring-2 focus:ring-[#1658e5] text-sm"
+                        placeholder="Search requests by Ticket ID, Employee Name or Asset Name ..." type="text" />
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="dateButton"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#f4f6fa] dark:bg-[#101622] border border-gray-200 dark:border-[#232e42] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText">Loading...</span>
+                    </button>
+                    <button onclick="handleLogout()"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#f44c4c] hover:bg-[#e03a3a] text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+            <div class="flex-1 overflow-y-auto bg-[#f4f6fa] dark:bg-slate-900 p-6 lg:p-10">
+                <div class="max-w-7xl mx-auto flex flex-col gap-8">
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                            Welcome back, <span id="welcome-message" class="text-gray-900 dark:text-white">Admin</span>
+                        </h2>
+                        <p class="text-gray-500 dark:text-gray-400 mt-1">Real-time overview of system performance and
+                            requests.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div
+                            class="card-hover bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm flex flex-col gap-2 min-h-[140px]">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span
+                                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#eaf1ff] text-[#1658e5] dark:bg-blue-900/20 dark:text-blue-400">
+                                    <span class="material-symbols-outlined text-[28px]">confirmation_number</span>
+                                </span>
+                                <span
+                                    class="ml-auto text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full dark:bg-blue-500/20">Live</span>
+                            </div>
+                            <span class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Requests</span>
+                            <span id="total-requests-count"
+                                class="text-3xl font-bold text-gray-900 dark:text-white">0</span>
+                        </div>
+                        <div
+                            class="card-hover bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm flex flex-col gap-2 min-h-[140px]">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span
+                                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#fff3f3] text-[#e03a3a] dark:bg-red-900/20 dark:text-red-400">
+                                    <span class="material-symbols-outlined text-[28px]">warning</span>
+                                </span>
+                                <span
+                                    class="ml-auto text-xs font-bold text-[#e03a3a] bg-[#fff3f3] px-2 py-1 rounded-full dark:bg-red-500/20">Action
+                                    Needed</span>
+                            </div>
+                            <span class="text-gray-500 dark:text-gray-400 text-sm font-medium">Rejected Requests</span>
+                            <span id="urgent-tickets-count"
+                                class="text-3xl font-bold text-gray-900 dark:text-white">0</span>
+                        </div>
+                        <div
+                            class="card-hover bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm flex flex-col gap-2 min-h-[140px]">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span
+                                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#f3f1ff] text-[#7c3aed] dark:bg-purple-900/20 dark:text-purple-400">
+                                    <span class="material-symbols-outlined text-[28px]">task_alt</span>
+                                </span>
+                                <span
+                                    class="ml-auto text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-full dark:bg-green-700/20 dark:text-green-300">Completed</span>
+                            </div>
+                            <span class="text-gray-500 dark:text-gray-400 text-sm font-medium">Completed Requests</span>
+                            <span id="completed-requests-count"
+                                class="text-3xl font-bold text-gray-900 dark:text-white">0</span>
+                        </div>
+                    </div>
+                    <!-- Dashboard Visualizations: Top Assets & Status Distribution -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <div
+                            class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm flex flex-col h-[340px]">
+                            <h4 class="text-base font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[22px] align-middle">bar_chart</span>
+                                Top 5 Requested Assets
+                            </h4>
+                            <div class="flex-1 flex items-center justify-center">
+                                <canvas id="top-assets-chart" style="max-width:100%; max-height:240px; width:100%; height:240px;"></canvas>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm flex flex-col h-[340px]">
+                            <h4 class="text-base font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[22px] align-middle">pie_chart</span>
+                                Request Status Distribution
+                            </h4>
+                            <div class="flex-1 flex items-center justify-center">
+                                <canvas id="status-distribution-chart" style="max-width:100%; max-height:240px; width:100%; height:240px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 overflow-hidden shadow-sm mt-2">
+                        <div
+                            class="p-6 border-b border-gray-200 dark:border-slate-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[24px] align-middle">history</span>
+                                Recent Tickets
+                            </h3>
+                            <div class="flex items-center gap-4">
+                                <a href="Ad-export.html">
+                                    <button
+                                        class=" glow-blue-600 flex items-center gap-2 bg-[#1658e5] hover:bg-[#0e4bce] dark:bg-[#1658e5] dark:hover:bg-[#0e4bce] dark:shadow-blue-900/30 text-white px-5 py-2.5 rounded-lg shadow-sm shadow-blue-600/30 transition-all text-sm font-bold">
+                                        <span class="material-symbols-outlined text-[20px]">download</span>
+                                        Export Report
+                                    </button>
+                                </a>
+                                <a href="Ad-ticket.html"
+                                    class="text-sm font-semibold text-[#1658e5] hover:bg-white dark:hover:bg-blue-500 px-4 py-2 rounded-lg flex items-center gap-1">
+                                    View All <span
+                                        class="material-symbols-outlined align-middle text-[16px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-900 dark:text-white">
+                                <thead
+                                    class="bg-[#f4f6fa] dark:bg-[#101622] text-xs uppercase font-bold text-gray-900 dark:text-white">
+                                    <tr>
+                                        <th class="px-6 py-4">REQUEST ID</th>
+                                        <th class="px-6 py-4">ASSET</th>
+                                        <th class="px-6 py-4">REQUESTED BY</th>
+                                        <th class="px-6 py-4">QUANTITY</th>
+                                        <th class="px-6 py-4">STATUS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activity-table-body"
+                                    class="divide-y divide-gray-200 dark:divide-[#232e42] text-gray-900 dark:text-white">
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-8 text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-xs text-gray-500 dark:text-gray-400 pb-4">
+                © 2026 AAI Hardware Maintenance System. All rights reserved.
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>

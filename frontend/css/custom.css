@@ -1,0 +1,153 @@
+/* =====================================================
+   GLOBAL SHARED STYLES (ADMIN + USER)
+   ===================================================== */
+
+/* Icon alignment inside inputs & buttons */
+.input-icon,
+.button-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* =====================================================
+   CARD STYLES
+   ===================================================== */
+
+.app-card {
+    border-radius: 1rem;
+    background: white;
+}
+
+.dark .app-card {
+    background: #181f2a;
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 25px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* =====================================================
+   BUTTON ANIMATIONS
+   ===================================================== */
+
+.animated-btn {
+    transition: all 0.25s ease;
+    transform-origin: center;
+}
+
+.animated-btn:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+}
+
+.animated-btn:active {
+    transform: scale(0.97);
+}
+
+/* Glow hover variants */
+.glow-blue:hover,
+.glow-blue-600:hover {
+    box-shadow: 0 0 0 6px rgba(19, 91, 236, 0.12);
+}
+
+/* =====================================================
+   SIDEBAR
+   ===================================================== */
+
+.sidebar-link {
+    transition: all 0.25s ease;
+}
+
+.sidebar-link:hover {
+    transform: translateX(4px);
+}
+
+.sidebar-active {
+    background: linear-gradient(120deg, #135bec, #0e4bce);
+    color: white !important;
+    box-shadow: 0 10px 20px rgba(19, 91, 236, 0.25);
+}
+
+/* =====================================================
+   SCROLLBAR STYLES
+   ===================================================== */
+
+/* Default scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* =====================================================
+   CHART ANIMATIONS
+   ===================================================== */
+
+.chart-bar-v {
+    transition: height 0.5s ease-out;
+}
+
+.chart-bar-h {
+    transition: width 0.6s ease-in-out;
+}
+
+/* =====================================================
+   LOADER
+   ===================================================== */
+
+.loader {
+    border: 3px solid rgba(19, 91, 236, 0.1);
+    border-left-color: #135bec;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =====================================================
+   MODAL / PAGE HELPERS
+   ===================================================== */
+
+/* Prevent background scroll when modal is open */
+body.modal-open {
+    overflow: hidden;
+}

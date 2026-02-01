@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<!-- ==========================================
+     ADMIN SETTINGS PAGE
+     ==========================================
+     Admin account settings and configuration
+     Features: Password change, theme toggle, account management
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>AAI Hardware Maintenance - Admin Settings</title>
+
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/logo.jpeg" type="image/jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/output.css">
+    <link rel="stylesheet" href="../css/custom.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!window.Chart) {
+                const s = document.createElement('script');
+                s.src = '../js/chart.min.js';
+                document.body.appendChild(s);
+            }
+        });
+    </script>
+
+
+    <!-- Theme Config -->
+    <script src="../config.js" defer></script>
+
+    <!-- Toast -->
+    <script src="../js/Toast.js" defer></script>
+
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    <script src="../js/Adminsetting.js" defer></script>
+
+
+    <!-- SECTION: Layout shell (sidebar + settings content) -->
+    <div class="flex h-screen w-full">
+
+        <!-- SECTION: Sidebar navigation -->
+        <aside
+            class="w-64 h-full flex flex-col bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="../assets/logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="./Ad-dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Admin Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="./Ad-dash.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="./Ad-ticket.html" class="sidebar-link  flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">confirmation_number</span>
+                    <span class="text-sm font-medium">Request Management</span>
+                </a>
+                <a href="./Ad-inventory.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="./Ad-settings.html"
+                    class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="./Ad-profile_dashboard.html"
+                class="animated-btn border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        <img id="sidebar-avatar" alt="Admin user profile picture" class="object-cover w-full h-full"
+                            src="https://ui-avatars.com/api/?name=Admin&background=random" />
+                    </div>
+                    <div class="flex flex-col overflow-hidden">
+                        <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                        <p id="sidebar-role" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                            ...</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <!-- SECTION: Settings main content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <!-- Top Header -->
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
+                <!-- Search -->
+                <div class="flex items-center w-full max-w-md">
+                    <div class="relative w-full">
+                    </div>
+                </div>
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <button id="dateButton"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText"></span>
+                    </button>
+                    <button onclick="handleLogout()"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 dark:bg-red-500 hover:bg-red-600 dark:hover:bg-red-700 text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Top Heading Area -->
+
+            <div class="flex-1 overflow-y-auto bg-background-light bg-slate-50 dark:bg-slate-900 p-6 lg:p-10">
+                <div class="mx-auto flex flex-col gap-8">
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight text-text-main-light dark:text-text-muted-dark">
+                            <span
+                                class="material-symbols-outlined text-blue-600 align-middle text-[30px]">settings</span>
+                            Account Settings
+                        </h2>
+                        <p class="text-text-muted-light dark:text-text-muted-dark mt-1">Manage your security
+                            preferences, notifications, and dashboard configuration.</p>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- SECURITY SETTINGS -->
+                        <div class="lg:col-span-2 flex flex-col gap-8">
+                            <div
+                                class="card-hover bg-card-light dark:bg-slate-900 rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+                                <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">
+                                    Security</h3>
+                                <p class="text-sm text-text-muted-light dark:text-text-muted-dark mb-6">
+                                    Update your account password regularly to keep your account secure.
+                                </p>
+
+                                <!-- Password Update Form -->
+                                <form class="max-w-xl" onsubmit="handlePasswordUpdate(event)">
+                                    <div class="space-y-4">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-semibold text-text-main-light dark:text-text-main-dark mb-1.5">New
+                                                    Password
+                                                    <div class="relative group">
+                                                        <input id="new-password"
+                                                            class="w-full rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark pl-4 pr-10 py-2.5 text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition-all placeholder:text-text-muted-light text-sm"
+                                                            type="password" required />
+                                                        <button type="button" onclick="togglePassword(this)"
+                                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted-light hover:text-blue-600 transition-colors cursor-pointer outline-none">
+                                                            <span
+                                                                class="material-symbols-outlined text-[20px]">visibility_off</span>
+                                                        </button>
+                                                    </div>
+                                                </label>
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-semibold text-text-main-light dark:text-text-main-dark mb-1.5">Confirm
+                                                    Password
+                                                    <div class="relative group">
+                                                        <input id="confirm-password"
+                                                            class="w-full rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark pl-4 pr-10 py-2.5 text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition-all placeholder:text-text-muted-light text-sm"
+                                                            type="password" required />
+                                                        <button type="button" onclick="togglePassword(this)"
+                                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted-light hover:text-blue-600 transition-colors cursor-pointer outline-none">
+                                                            <span
+                                                                class="material-symbols-outlined text-[20px]">visibility_off</span>
+                                                        </button>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-6 flex justify-end">
+                                        <button type="submit"
+                                            class="bg-blue-600 dark:bg-blue-600 hover:bg-blue-600-hover dark:hover:bg-blue-600-hover text-white px-6 py-2.5 rounded-lg shadow-sm shadow-blue-600/30 transition-all text-sm font-bold">
+                                            Update Password
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- ADMIN: APPEARANCE SETTINGS -->
+                            <div class="lg:col-span-1 flex flex-col gap-8">
+                                <div
+                                    class="card-hover bg-gradient-to-br from-card-light to-blue-50/50 dark:from-card-dark dark:bg-slate-900 rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+                                    <div class="flex items-center gap-2 mb-4 text-blue-600">
+                                        <span class="material-symbols-outlined">admin_panel_settings</span>
+                                        <h3 class="text-xs uppercase font-bold tracking-wider">Admin Settings</h3>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-bold text-text-main-light dark:text-text-main-dark">
+                                                Appearance
+                                            <p>
+                                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">
+                                                Switch
+                                                application theme</p>
+                                        </div>
+                                        <button aria-checked="false"
+                                            class="group relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 dark:bg-blue-600 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                                            role="switch" type="button">
+                                            <span class="sr-only">Use setting</span>
+                                            <span aria-hidden="true"
+                                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0 dark:translate-x-5 group-hover:scale-95">
+                                                <span
+                                                    class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity opacity-100 ease-in duration-200 dark:opacity-0 dark:duration-100">
+                                                    <svg class="h-3 w-3 text-gray-400" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path
+                                                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2">
+                                                        </path>
+                                                    </svg>
+                                                </span>
+                                                <span
+                                                    class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity opacity-0 ease-out duration-100 dark:opacity-100 dark:duration-200">
+                                                    <svg class="h-3 w-3 text-blue-600" fill="currentColor"
+                                                        viewBox="0 0 20 20">
+                                                        <path
+                                                            d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z">
+                                                        </path>
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <p
+                                        class="text-xs text-text-muted-light dark:text-text-muted-dark mt-4 pt-4 border-t border-border-light dark:border-border-dark italic">
+                                        This preference overrides the system default.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ADMIN: USER PASSWORD MANAGEMENT -->
+                        <div
+                            class="card-hover bg-card-light dark:bg-slate-900 rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark">
+                                    User Security
+                                </h3>
+                            </div>
+
+                            <p class="text-sm text-text-muted-light dark:text-text-muted-dark mb-6">
+                                Reset passwords for <b>non-admin users</b>. Admin accounts cannot be modified here.
+                            </p>
+
+
+                            <form class="max-w-xl" onsubmit="handleAdminUserPasswordUpdate(event)">
+                                <div class="space-y-4">
+
+                                    <!-- USER IDENTIFIER -->
+                                    <div>
+                                        <label class="block text-sm font-semibold mb-1.5">
+                                            Emp ID
+
+                                            <div class="flex gap-2">
+                                                <input id="admin-user-identifier" onblur="validateEmpId()"
+                                                    class="flex-1 rounded-lg border px-4 py-2.5 text-sm"
+                                                    placeholder="Enter emp_id" required />
+                                                <button type="button" onclick="fetchUserDetails()"
+                                                    class="bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white px-4 py-2.5 rounded-lg text-sm font-bold">
+                                                    Verify
+                                                </button>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <!-- NEW + CONFIRM -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-semibold mb-1.5">
+                                                New Password
+
+                                                <div class="relative group">
+                                                    <input id="admin-new-password" type="password"
+                                                        class="w-full rounded-lg border px-4 pr-10 py-2.5 text-sm"
+                                                        required />
+                                                    <button type="button" onclick="togglePassword(this)"
+                                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer outline-none">
+                                                        <span
+                                                            class="material-symbols-outlined text-[20px]">visibility_off</span>
+                                                    </button>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-semibold mb-1.5">
+                                                Confirm Password
+                                                <div class="relative group">
+                                                    <input id="admin-confirm-password" type="password"
+                                                        class="w-full rounded-lg border px-4 pr-10 py-2.5 text-sm"
+                                                        required />
+                                                    <button type="button" onclick="togglePassword(this)"
+                                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer outline-none">
+                                                        <span
+                                                            class="material-symbols-outlined text-[20px]">visibility_off</span>
+                                                    </button>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="mt-6 flex justify-end">
+                                    <button type="submit"
+                                        class="bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white px-6 py-2.5 rounded-lg text-sm font-bold">
+                                        Update Password
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center text-xs text-text-muted-light dark:text-text-muted-dark pb-4">
+                © 2026 AAI Hardware Maintenance System. All rights reserved.
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

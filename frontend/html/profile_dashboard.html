@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ==========================================
+     USER PROFILE PAGE
+     ==========================================
+     User profile viewing and editing interface
+     Features: View personal details, edit profile, update information
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AAI Hardware Maintenance - User Profile Dashboard</title>
+
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/logo.jpeg" type="image/jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/output.css">
+    <link rel="stylesheet" href="../css/custom.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!window.Chart) {
+                const s = document.createElement('script');
+                s.src = '../js/chart.min.js';
+                document.body.appendChild(s);
+            }
+        });
+    </script>
+
+    <!-- Theme Config -->
+    <script src="../config.js" defer></script>
+
+    <!-- Toast -->
+    <script src="../js/Toast.js" defer></script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden h-screen flex">
+
+    <script src="../js/userprofile.js" defer></script>
+    <aside
+        class="w-64 h-full flex flex-col bg-card-light dark:bg-slate-800 border-r border-border-light dark:border-slate-700 flex-shrink-0 z-20">
+        <div class="p-6 flex items-center gap-3">
+            <div class="p-2 rounded-lg flex items-center justify-center">
+                <img src="../assets/logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+            </div>
+            <div>
+                <a href="./user_dash.html">
+                    <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                </a>
+                <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">User Portal</p>
+            </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+            <a href="./user_dash.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a href="./MyRequest.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">assignment</span>
+                <span class="text-sm font-medium">My Requests</span>
+            </a>
+            <a href="./user_issue.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">build</span>
+                <span class="text-sm font-medium">Issue Requests</span>
+            </a>
+            <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+            <a href="./Settings.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                <span class="text-sm font-medium">Settings</span>
+            </a>
+        </nav>
+        <a href="./profile_dashboard.html"
+            class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block bg-white dark:bg-gray-800/50">
+            <div class="flex items-center gap-3 p-4 rounded-lg cursor-pointer transition-colors">
+                <div id="sidebar-avatar"
+                    class="w-10 h-10 rounded-full bg-cover bg-center border border-gray-100 dark:border-gray-700"
+                    style="background-image: url('https://ui-avatars.com/api/?name=User&background=random');">
+                </div>
+                <div class="flex flex-col flex-1 min-w-0">
+                    <p id="sidebar-name"
+                        class="text-sm font-bold text-text-main-light dark:text-text-main-dark truncate">
+                        Loading...
+                    </p>
+                    <p id="sidebar-role" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                        User
+                    </p>
+                </div>
+            </div>
+        </a>
+    </aside>
+
+    <main class="flex-1 flex flex-col relative z-0 h-full overflow-hidden">
+        <header
+            class="h-16 flex-none border-b border-border-light dark:border-border-dark bg-card-light dark:bg-slate-800 dark:bg-card-dark flex items-center justify-between px-6 z-20">
+            <div class="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark text-sm">
+                <a href="./user_dash.html"
+                    class="material-symbols-outlined text-[24px] hover:text-blue-600 transition-colors">home</a>
+                <span>/</span>
+                <a href="./profile_dashboard.html"
+                    class="text-text-main-light dark:text-text-main-dark font-medium">Profile</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="ToggleBtn"
+                    class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-slate-900 text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                    <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+                    <span id="themeText"></span>
+                </button>
+                <button id="dateButton"
+                    class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                    <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                    <span id="dateText"></span>
+                </button>
+                <button onclick="handleLogout()"
+                    class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all h-10">
+                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 bg-background-light dark:bg-slate-900">
+            <div class="max-w-[1280px] mx-auto">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-text-main-light dark:text-text-main-dark">
+                        <span class="material-symbols-outlined align-middle [150px]">person</span>
+                        My Profile
+                    </h1>
+                    <p class="text-text-muted-light dark:text-text-muted-dark mt-1">Manage your account settings and
+                        preferences</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                    <div class="lg:col-span-4">
+                        <div
+                            class="card-hover bg-card-light dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-slate-700 p-8 flex flex-col items-center text-center">
+                            <div class="mb-6 relative group">
+                                <div id="profile-avatar-large"
+                                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 shadow-md border-4 border-background-light dark:border-background-dark"
+                                    style="background-image: url('https://ui-avatars.com/api/?name=User&background=random');">
+                                </div>
+                            </div>
+                            <h2 id="display-name"
+                                class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">Loading...
+                            </h2>
+                            <p id="display-role"
+                                class="text-text-muted-light dark:text-text-muted-dark font-medium mb-4">...
+                            </p>
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-bold uppercase tracking-wider border border-green-100 dark:border-green-800">
+                                <span class="size-2 rounded-full bg-green-500 animate-pulse"></span> Active
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-8">
+                        <section
+                            class="card-hover bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
+                            <div
+                                class="px-6 py-5 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-background-light/50 dark:bg-gray-800/30">
+                                <h2 class="text-text-main-light dark:text-text-main-dark text-lg font-bold">Personal
+                                    Information</h2>
+                                <div id="button-group">
+                                    <button id="edit-btn" onclick="toggleEditMode(true)"
+                                        class="animated-btn flex items-center gap-2 bg-blue-600 hover:bg-blue-600-hover text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors dark:bg-blue-600 dark:hover:bg-blue-700">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span> Edit Profile
+                                    </button>
+                                    <div id="save-cancel-group" class="hidden gap-2">
+                                        <button onclick="toggleEditMode(false)"
+                                            class="px-4 py-2 bg-background-light dark:bg-gray-700 text-text-main-light dark:text-text-main-dark border border-border-light dark:border-border-dark rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Cancel</button>
+                                        <button onclick="saveProfileChanges()"
+                                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold transition-colors shadow-lg shadow-green-600/20">Save
+                                            Changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <form id="profile-form" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Full
+                                            Name
+                                            <input name="name" id="input-name" type="text" readonly autocomplete="name"
+                                                class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-slate-800 text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all">
+                                        </label>
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Employee
+                                            ID
+                                            <input name="emp_id" id="input-emp-id" type="text" readonly
+                                                autocomplete="emp_id"
+                                                class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-slate-800 text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all opacity-70 cursor-not-allowed">
+                                        </label>
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Username
+                                            <input name="username" id="input-username" type="text"
+                                                autocomplete="username"
+                                                class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-slate-800 text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all"
+                                                readonly>
+                                        </label>
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Department
+                                            <input name="dept" id="input-dept" type="text" readonly
+                                                autocomplete="department"
+                                                class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-slate-800 text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all">
+                                        </label>
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Role
+                                            <input name="role" id="input-role" type="text" readonly autocomplete="role"
+                                                class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-slate-800 text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all">
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-xs text-text-muted-light dark:text-text-muted-dark pb-4">
+                © 2026 AAI Hardware Maintenance System. All rights reserved.
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

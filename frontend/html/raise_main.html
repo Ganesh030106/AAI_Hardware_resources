@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AAI Hardware Maintenance - Hardware Maintenance Request </title>
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/logo.jpeg" type="image/jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/output.css">
+    <link rel="stylesheet" href="../css/custom.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!window.Chart) {
+                const s = document.createElement('script');
+                s.src = '../js/chart.min.js';
+                document.body.appendChild(s);
+            }
+        });
+    </script>
+
+    <!-- Theme Config -->
+    <script src="../config.js" defer></script>
+
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden h-screen flex">
+    <script src="../js/raisemain.js" defer></script>
+
+    <!-- SECTION: Layout shell (sidebar + blurred dashboard background) -->
+    <main class="flex-1 flex flex-col relative z-0">
+
+        <!-- SECTION: Sidebar navigation -->
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-slate-800 border-r border-border-light dark:border-slate-700 flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="../assets/logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="./user_dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">User Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="./user_dash.html"
+                    class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="./MyRequest.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">assignment</span>
+                    <span class="text-sm font-medium">My Request</span>
+                </a>
+                <a href="./TrackRequest.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">history</span>
+                    <span class="text-sm font-medium">Track Request</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="./Settings.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="./profile_dashboard.html"
+                class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-4 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                        style="background-image: url('https://avatar.iran.liara.run/public/boy');">
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-0">
+                        <p class="text-sm font-bold text-text-main-light dark:text-text-main-dark truncate">
+                            Alex Johnson</p>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                            alex.j@company.com</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <!-- SECTION: Top bar actions -->
+        <header
+            class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+            <div class="flex items-center w-full max-w-md">
+                <div class="relative w-full">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark material-symbols-outlined text-[20px]">search</span>
+                    <input id="searchInput"
+                        class="w-full pl-10 pr-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border-none focus:ring-2 focus:ring-blue-600 text-sm text-text-main-light dark:text-text-main-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark"
+                        placeholder="Search request, technicians..." type="text" />
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="handleLogout()"
+                    class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- SECTION: Blurred dashboard content behind modal -->
+        <div class="flex-1 p-6 lg:p-10 opacity-30 pointer-events-none filter blur-[2px]">
+            <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark">Welcome
+                        back, Alex</h1>
+                </div>
+            </header>
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div
+                    class="bg-card-light dark:bg-card-dark p-6 rounded-xl border border-border-light dark:border-border-dark h-36">
+                </div>
+                <div
+                    class="bg-card-light dark:bg-card-dark p-6 rounded-xl border border-border-light dark:border-border-dark h-36">
+                </div>
+                <div
+                    class="bg-card-light dark:bg-card-dark p-6 rounded-xl border border-border-light dark:border-border-dark h-36">
+                </div>
+            </section>
+        </div>
+
+        <div
+            class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+
+            <section
+                class="bg-white dark:bg-card-dark w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden ring-1 ring-border-light dark:ring-border-dark">
+
+                <div
+                    class="flex items-center justify-between px-6 py-5 border-b border-border-light dark:border-border-dark">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-blue-600">build</span>
+                            <h2
+                                class="text-text-main-light dark:text-text-main-dark text-xl font-bold leading-tight tracking-[-0.015em]">
+                                New Maintenance Request
+                            </h2>
+                        </div>
+                        <p class="text-text-muted-light dark:text-text-muted-dark text-sm font-medium mt-1">
+                            Submit a request for Hardware issues. Our team will review shortly.
+                        </p>
+                    </div>
+                    <a href="./user_dash.html">
+                        <button
+                            class="p-2 rounded-full hover:bg-background-light dark:hover:bg-gray-800 text-text-muted-light dark:text-text-muted-dark transition-colors">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </a>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-6 lg:p-8 bg-white dark:bg-background-dark/50">
+                    <div class="max-w-3xl mx-auto space-y-8">
+
+                        <div
+                            class="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl p-5">
+                            <div
+                                class="flex items-center gap-2 mb-3 text-blue-600 font-semibold text-sm uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-[18px]">badge</span>
+                                <span>Requester Details</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase mb-1">
+                                        Full Name </p>
+                                    <p class="text-[#0d121b] dark:text-white text-base font-medium" id="empName">
+                                        Loading...</p>
+                                </div>
+                                <div>
+                                    <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase mb-1">
+                                        Employee ID </p>
+                                    <p class="text-[#0d121b] dark:text-white text-base font-medium" id="empId">
+                                        Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3
+                                class="text-lg font-bold text-text-main-light dark:text-text-main-dark flex items-center gap-2">
+                                <span
+                                    class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark">computer</span>
+                                Hardware Details
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label class="flex flex-col flex-1">
+                                    <p class="text-text-main-light dark:text-text-main-dark text-sm font-medium pb-2">
+                                        Asset ID </p>
+                                    <select id="hardwareName" class="form-input flex w-full rounded-lg text-[#0d121b] dark:text-white
+                                            focus:outline-0 focus:ring-2 focus:ring-blue-600/20 border border-[#cfd7e7] dark:border-slate-600
+                                            bg-[#f8f9fc] dark:bg-slate-800 focus:border-blue-600 h-12 px-4 text-sm">
+                                        <option value="">Select Asset ID</option>
+                                    </select>
+                                </label>
+                                <label class="flex flex-col flex-1">
+                                    <p class="text-text-main-light dark:text-text-main-dark text-sm font-medium pb-2">
+                                        Hardware Name</p>
+                                    <input id="hardwareNameDisplay"
+                                        class="form-input flex w-full rounded-lg text-[#0d121b] dark:text-white focus:outline-0 focus:ring-2 focus:ring-blue-600/20 border border-[#cfd7e7] dark:border-slate-600 bg-[#f8f9fc] dark:bg-slate-800 focus:border-blue-600 h-12 placeholder:text-[#4c669a] dark:placeholder:text-slate-500 px-4 text-sm font-normal leading-normal transition-all"
+                                        readonly value="" />
+                                </label>
+                                <label class="flex flex-col flex-1">
+                                    <p class="text-text-main-light dark:text-text-main-dark text-sm font-medium pb-2">
+                                        Hardware Model</p>
+                                    <input id="hardwareModelDisplay"
+                                        class="form-input flex w-full rounded-lg text-[#0d121b] dark:text-white focus:outline-0 focus:ring-2 focus:ring-blue-600/20 border border-[#cfd7e7] dark:border-slate-600 bg-[#f8f9fc] dark:bg-slate-800 focus:border-blue-600 h-12 placeholder:text-[#4c669a] dark:placeholder:text-slate-500 px-4 text-sm font-normal leading-normal transition-all"
+                                        readonly value="" />
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3
+                                class="text-lg font-bold text-text-main-light dark:text-text-main-dark flex items-center gap-2">
+                                <span
+                                    class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark">bug_report</span>
+                                Issue Details
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label class="flex flex-col flex-1">
+                                    <p class="text-text-main-light dark:text-text-main-dark text-sm font-medium pb-2">
+                                        Category</p>
+                                    <select id="issueCategory"
+                                        class="flex w-full rounded-lg text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-blue-600 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark h-11 px-4 text-sm transition-all">
+                                        <option value="">Select category</option>
+                                    </select>
+                                </label>
+                                <label class="flex flex-col flex-1">
+                                    <p class="text-text-main-light dark:text-text-main-dark text-sm font-medium pb-2">
+                                        Issue</p>
+                                    <select id="issueSelect"
+                                        class="flex w-full rounded-lg text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-blue-600 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark h-11 px-4 text-sm transition-all">
+                                        <option value="">Select Issue</option>
+                                    </select>
+                                </label>
+                                <label class="flex flex-col flex-1">
+                                    <p class="text-[#0d121b] dark:text-slate-200 text-sm font-medium pb-2"> Priority
+                                        Level </p>
+                                    <input id="priorityDisplay"
+                                        class="form-input flex w-full rounded-lg text-[#0d121b] dark:text-white focus:outline-0 focus:ring-2 focus:ring-blue-600/20 border border-[#cfd7e7] dark:border-slate-600 bg-[#f8f9fc] dark:bg-slate-800 focus:border-blue-600 h-12 placeholder:text-[#4c669a] dark:placeholder:text-slate-500 px-4 text-sm font-normal leading-normal transition-all"
+                                        readonly value="" />
+                                </label>
+                            </div>
+                            <label class="flex flex-col w-full">
+                                <p class="text-text-main-light dark:text-text-main-dark text-sm font-medium pb-2">
+                                    Description</p>
+                                <textarea id="issueDescription"
+                                    class="flex w-full rounded-lg text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-blue-600 border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark h-32 placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark p-4 text-sm resize-none transition-all"
+                                    placeholder="Please describe the issue in detail if not mentioned in the list. Include any error codes displayed on the screen."></textarea>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="px-6 py-4 border-t border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark flex justify-end items-center gap-3">
+                    <a href="./user_dash.html">
+                        <button onclick="clearForm()"
+                            class="animated-btn px-6 h-11 rounded-lg border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark font-bold hover:bg-background-light dark:hover:bg-gray-800 transition-colors text-sm">
+                            Clear Form
+                        </button>
+                    </a>
+                    <button id="submitRequestBtn"
+                        class="animated-btn glow-blue-600 px-6 h-11 rounded-lg bg-blue-600 hover:bg-blue-600-hover text-white font-bold shadow-lg shadow-blue-600/30 transition-all text-sm flex items-center gap-2">
+                        <span>Submit Request</span>
+                        <span class="material-symbols-outlined text-sm">send</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+</body>
+
+</html>
