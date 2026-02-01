@@ -202,7 +202,7 @@ window.analyzeWithAI = async function (issueId, btn) {
     btn.innerText = "Analyzing...";
 
     try {
-        const res = await fetch(API_BASE, { method: 'POST' });
+        const res = await fetch(`${API_BASE}/api/aianalysis/${issueId}`, { method: 'POST' });
         if (!res.ok) throw new Error('AI analysis failed');
         const data = await res.json();
         // Show AI details for this row only
