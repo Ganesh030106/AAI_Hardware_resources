@@ -1,29 +1,10 @@
-// --- AI ANALYSIS HANDLER ---
-async function analyzeWithAI(issueId, btn) {
-    if (!issueId) return;
-    const apiUrl = `${API_BASE}/api/aianalysis/${issueId}`;
-    btn.disabled = true;
-    btn.innerText = 'Analyzing...';
-    try {
-        const res = await fetch(apiUrl, { method: 'POST' });
-        if (!res.ok) throw new Error('AI analysis failed');
-        // Optionally show a toast or notification here
-        await loadIssues(currentPage);
-    } catch (err) {
-        alert('AI analysis failed.');
-        console.error(err);
-    } finally {
-        btn.disabled = false;
-        btn.innerText = 'Analyze with AI';
-    }
-}
 // frontend/js/Adminissue.js
 /* ==========================================
    ADMIN ISSUE MANAGEMENT PAGE SCRIPT
    ========================================== */
 
-   // Base API URL
-const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
+// Base API URL
+const API_BASE = "https://app-aai-hardware-resources-backend.onrender.com";
 
 // --- STATE VARIABLES ---
 let currentPage = 1;
@@ -195,6 +176,58 @@ function updatePagination(total) {
 function changePage(dir) {
     loadIssues(currentPage + dir);
 }
+
+// ---------------- AI ANALYSIS (TOGGLE + COLOR) ----------------
+window.analyzeWithAI = async function (issueId, btn) {
+    const detailsDiv = document.getElementById(`ai-details-${issueId}`);
+
+    // CLOSE
+    if (btn.dataset.open === "true") {
+        detailsDiv.classList.add("hidden");
+        btn.dataset.open = "false";
+        btn.innerText = "Analyze with AI";
+        return;
+    }
+
+    // OPEN (already loaded)
+    if (btn.dataset.loaded === "true") {
+        detailsDiv.classList.remove("hidden");
+        btn.dataset.open = "true";
+        btn.innerText = "Hide AI Analysis";
+        return;
+    }
+
+    // FIRST TIME FETCH
+    btn.disabled = true;
+    btn.innerText = "Analyzing...";
+
+    try {
+        const res = await fetch(API_BASE, { method: 'POST' });
+        if (!res.ok) throw new Error('AI analysis failed');
+        const data = await res.json();
+        // Show AI details for this row only
+        const detailsDiv = document.getElementById(`ai-details-${issueId}`);
+        if (detailsDiv && data.aianalysis) {
+            detailsDiv.style.display = '';
+            detailsDiv.innerHTML = `
+                        <div class=\"text-xs text-left\">
+                            <div class=\"mb-1\"><span class=\"font-bold\">AI Priority:</span> <span class=\"inline-block px-2 py-0.5 rounded-full ${data.aianalysis.priority === 'High' ? 'bg-red-100 text-red-700' :
+                    data.aianalysis.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-green-100 text-green-700'}\">${data.aianalysis.priority}</span></div>
+                            <div class=\"mb-1\"><span class=\"font-bold\">AI Recommendation:</span> ${data.aianalysis.recommendation}</div>
+                            <div><span class=\"font-bold\">AI Reason:</span> ${data.aianalysis.reason}</div>
+                        </div>
+                    `;
+        }
+    } catch (err) {
+        alert('AI analysis failed.');
+        console.error(err);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = 'Analyze with AI';
+    }
+}
+
 
 // --- LOAD FILTER OPTIONS ---
 
@@ -387,3 +420,4 @@ function initIssueCharts(catData, prioData) {
 
 // Initial Load
 loadIssueStats();
+
