@@ -4,15 +4,15 @@
 <!-- ==========================================
      ADMIN MAINTENANCE MANAGEMENT PAGE
      ==========================================
-     Interface for viewing and managing hardware issue requests from employees
-     Features: Issue filtering, search, priority management, asset tracking
+     Interface for viewing and managing hardware Maintenance Requests from employees
+     Features: Maintenance filtering, search, priority management, asset tracking
 ========================================== -->
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>AAI Hardware Maintenance- Admin Issue Request Management</title>
+    <title>AAI Hardware Maintenance- Admin Maintenance Request Management</title>
 
     <!-- Cache Control -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -134,15 +134,15 @@
                         <h2 class="text-[#0d121b] dark:text-white text-3xl font-extrabold tracking-tight">
                             <span
                                 class="material-symbols-outlined text-blue-600 align-middle text-[30px] dark:text-blue-600">build</span>
-                            Issue Management
+                            Maintenance Management
                         </h2>
                         <p class="text-[#4c669a] text-base font-medium dark:text-text-muted-dark">Manage reported
-                            hardware issue requests</p>
+                            hardware Maintenance Requests</p>
                     </div>
                     <div>
                         <button onclick="location.href='Ad-ticket.html'"
                             class="animated-btn px-4 py-2 bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white text-sm font-bold rounded-lg glow-blue-600">
-                            New Request
+                            Hardware Request
                         </button>
                     </div>
                 </div>
@@ -151,7 +151,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-2">
                     <div
                         class="bg-white dark:bg-[#151c2b] rounded-xl p-5 border border-[#cfd7e7] dark:border-gray-800 shadow-sm">
-                        <h3 class="text-sm font-bold text-[#0d121b] dark:text-white mb-4 uppercase">Issues by Category
+                        <h3 class="text-sm font-bold text-[#0d121b] dark:text-white mb-4 uppercase">Maintenances by Category
                         </h3>
                         <div class="relative h-60 w-full flex justify-center">
                             <canvas id="categoryChart"></canvas>
@@ -160,7 +160,7 @@
 
                     <div
                         class="lg:col-span-2 bg-white dark:bg-[#151c2b] rounded-xl p-5 border border-[#cfd7e7] dark:border-gray-800 shadow-sm">
-                        <h3 class="text-sm font-bold text-[#0d121b] dark:text-white mb-4 uppercase">Issues by Priority
+                        <h3 class="text-sm font-bold text-[#0d121b] dark:text-white mb-4 uppercase">Maintenances by Priority
                         </h3>
                         <div class="relative h-60 w-full">
                             <canvas id="priorityChart"></canvas>
@@ -212,10 +212,10 @@
                                         Category</th>
                                     <th
                                         class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] dark:text-white uppercase w-[150px]">
-                                        Issue</th>
+                                        Maintenance</th>
                                     <th
                                         class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] dark:text-white uppercase w-[200px]">
-                                        Issue Description</th>
+                                        Maintenance Description</th>
                                     <th
                                         class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] dark:text-white uppercase w-[120px]">
                                         Priority</th>
@@ -229,7 +229,7 @@
                             </thead>
                             <tbody id="issue-table-body" class="divide-y divide-[#cfd7e7] dark:divide-gray-800">
                                 <tr>
-                                    <td colspan="9" class="px-6 py-8 text-center text-[#4c669a]">Loading issues...</td>
+                                    <td colspan="9" class="px-6 py-8 text-center text-[#4c669a]">Loading Maintenances...</td>
                                 </tr>
                             </tbody>
                         </table>

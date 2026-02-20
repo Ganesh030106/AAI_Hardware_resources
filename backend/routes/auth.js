@@ -66,7 +66,6 @@ router.post('/user-login', async (req, res) => {
 
         // 3. Validate Role (Reject admin users - they should use admin login)
         if (user.role.toLowerCase() === 'admin') {
-            console.log("User Login failed: Admin users must use Admin Login");
             return res.status(403).json({ success: false, message: "Invalid Credentials" });
         }
 
