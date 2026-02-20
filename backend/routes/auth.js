@@ -21,7 +21,7 @@ router.post('/superadminlogin', async (req, res) => {
 
         // 3. SAFER Role Check (Prevents crash if role is missing)
         if (!user.role || user.role.toLowerCase() !== 'superadmin') {
-            return res.status(403).json({ message: "Access Denied. You are not a Superadmin." });
+            return res.status(403).json({ message: "Invalid Credentials" });
         }
 
         // 4. REMOVED the "req.session" line that was causing the 500 error.
@@ -67,7 +67,7 @@ router.post('/user-login', async (req, res) => {
         // 3. Validate Role (Reject admin users - they should use admin login)
         if (user.role.toLowerCase() === 'admin') {
             console.log("User Login failed: Admin users must use Admin Login");
-            return res.status(403).json({ success: false, message: "Please use Admin Login" });
+            return res.status(403).json({ success: false, message: "Invalid Credentials" });
         }
 
         console.log("User Login successful for user:", username);
@@ -114,7 +114,7 @@ router.post('/login', async (req, res) => {
 
 
         if (user.role.toLowerCase() !== 'admin') {
-            return res.status(403).json({ success: false, message: "Admins only" });
+            return res.status(403).json({ success: false, message: "Invalid Credentials" });
         }
 
         console.log("Login successful for user:", username);
