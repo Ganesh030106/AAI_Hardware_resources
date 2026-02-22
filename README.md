@@ -38,173 +38,97 @@
 - **Frontend:** HTML, Tailwind CSS, Vanilla JS
 - **PDF Generation:** PDFKit
 
-Project Structure
 
-AAI_Hardware Resources is a full-stack web application for managing IT hardware resources, requests, and issues within an organization. It provides separate interfaces and workflows for administrators and regular users, supporting authentication, inventory management, request/issue tracking, and reporting.
+## Project Structure
 
+**AAI_Hardware Resources** is a full-stack web application for managing IT hardware resources, requests, and issues within an organization. It provides separate interfaces and workflows for administrators and regular users, supporting authentication, inventory management, request/issue tracking, and reporting.
+```
 login_system/
+ **model/**: Mongoose schemas for users, hardware, issues, requests, vendors, purchases, allocation.
+ **public/**: Frontend HTML, JS, and CSS files for all admin/user interfaces. Includes:
+  - **css/**: Tailwind output and custom styles
+  - **js/**: All frontend JS modules (admin/user dashboards, login, requests, etc.)
+  - HTML pages for admin, user, and superadmin
+ **routes/**: Express route modules for authentication, dashboard, inventory, issues, requests, profile, settings, tickets, user main, user issue, user request, etc.
+ **server.js**: Main Express server setup, MongoDB connection, and route mounting.
+ **migratepass.js**: Script to migrate/rehash all user passwords (for upgrades).
+ **resetpassword.js**: Script to reset a user's password (manual admin tool).
+ **tailwind.config.js**: Tailwind CSS configuration.
+ **package.json**: Project dependencies and scripts.
+ **package-lock.json**: Dependency lock file.
+ **.env**: Environment variables (not committed).
+ **src/**: Tailwind input CSS.
+├── routes/        # Express route handlers (RESTful APIs)
+├── server.js      # Main Express server (entry point)
+ Secure authentication for users, admins, and superadmins
+ Hardware inventory management (add, update, track stock)
+ Hardware request and issue submission (by users)
+ Admin approval and management of requests/issues
+ Vendor and purchase management
+ PDF/CSV/Excel export of inventory and requests
+ User/admin dashboards with statistics and charts
+ Profile and settings management (password, theme, etc.)
+ Responsive, modern UI (Tailwind CSS)
+ Superadmin user management (promote/demote/delete users)
+ Password migration/reset scripts for admin use
 
-├── model/                  # Mongoose schemas for users, hardware, issues, requests, vendors, purchases, allocation
-├── public/                 # Frontend HTML, JS, and CSS files for all admin/user interfaces
-│   ├── css/                # Tailwind output and custom styles
-│   ├── js/                 # All frontend JS modules (admin/user dashboards, login, requests, etc.)
-│   ├── AdminLogin.html
-│   ├── UserLogin.html
-│   ├── SuperAdminLogin.html
-│   └── (other admin/user HTML pages)
-│
-├── routes/                 # Express route modules
-│   ├── authentication
-│   ├── dashboard
-│   ├── inventory
-│   ├── issues
-│   ├── requests
-│   ├── profile
-│   ├── settings
-│   ├── tickets
-│   ├── user main
-│   ├── user issue
-│   └── user request
-│
-├── src/                    # Tailwind input CSS
-├── server.js               # Main Express server setup, MongoDB connection, and route mounting
-├── migratepass.js          # Script to migrate/rehash all user passwords (for upgrades)
-├── resetpassword.js        # Script to reset a user's password (manual admin tool)
-├── tailwind.config.js      # Tailwind CSS configuration
-├── package.json            # Project dependencies and scripts
-├── package-lock.json       # Dependency lock file
-└── .env                    # Environment variables (not committed)
-Features
 
-Secure authentication for users, admins, and superadmins
+ Node.js (v14 or higher recommended)
+ MongoDB (local or cloud instance)
+### Admin
+- Login via `/AdminLogin.html`
+ 1. Clone the repository:
+    ```sh
+    git clone <repo-url>
+    cd AAI_Hardware
+    ```
+ 2. Install dependencies:
+    ```sh
+    npm install
+    ```
+    This will install all required dependencies and devDependencies as listed in `package.json`:
+    - express, mongoose, body-parser, cors, dotenv, helmet, express-session, express-mongo-sanitize, bcrypt, chart.js, pdfkit
+    - dev: nodemon, tailwindcss, autoprefixer, postcss, concurrently, @tailwindcss/forms, @tailwindcss/container-queries
+    
+    > **Note:** `pdfkit` is used for PDF export features. Keep it installed if you use PDF export.
+ 3. Ensure MongoDB is running and update the connection string in `.env` (MONGO_URI) if needed.
+| `/api/superadminlogin`                | POST   | Superadmin login                             |
+| `/api/reset-password`                 | POST   | Reset password (by username or emp_id)       |
+ Start the server and Tailwind in dev mode:
+ ```sh
+ npm run dev
+ ```
+ Or, to run only the server:
+ ```sh
+ npm run server
+ ```
+ Or, to run only Tailwind CSS watcher:
+ ```sh
+ npm run tailwind
+ ```
+ The app will be available at `http://localhost:5000` (default) or the port specified in your `.env` config.
+| `/api/inventory/filter-options`        | GET    | Get inventory filter options                 |
+| `/api/tickets`                        | GET    | List all hardware requests (tickets)         |
+| `/api/tickets/user/:emp_id`           | GET    | Get requests for a specific user             |
+| `/api/tickets/:id/status`             | PUT    | Update ticket status                         |
+| `/api/issues`                         | GET    | List all maintenance/issue requests          |
+| `/api/issues/filter-options`           | GET    | Get issue filter options                     |
+| `/api/issues/:id/priority`            | PUT    | Update issue priority                        |
+| `/api/issues/:id/technician-status`   | PUT    | Update technician status for issue           |
+| `/api/issue-requests`                 | GET    | List all user issue requests (admin)         |
+| `/api/issue-requests/user/:emp_id`    | GET    | List issue requests for a user               |
+| `/api/issue-requests/:id`             | GET    | Get single issue request                     |
+| `/api/issue-requests`                 | POST   | Create new issue request                     |
+| `/api/issue-requests/:id`             | PUT    | Update issue request (admin)                 |
+| `/api/issue-requests/:id`             | DELETE | Delete issue request                         |
+| `/api/dashboard/stats`                | GET    | Dashboard statistics (requests, charts)      |
+| `/api/allocations/employee/:emp_id`   | GET    | Get hardware allocations for employee        |
+| `/api/hardware/asset/:assetId`        | GET    | Get hardware details by asset ID             |
+| ...                                   | ...    | ...                                          |
 
-Hardware inventory management (add, update, track stock)
+See `routes/` for full API details and more endpoints (settings, profile, exports, etc.).
 
-Hardware request and issue submission (by users)
-
-Admin approval and management of requests/issues
-
-Vendor and purchase management
-
-PDF/CSV/Excel export of inventory and requests
-
-User/admin dashboards with statistics and charts
-
-Profile and settings management (password, theme, etc.)
-
-Responsive, modern UI (Tailwind CSS)
-
-Superadmin user management (promote/demote/delete users)
-
-Password migration/reset scripts for admin use
-
-Requirements
-
-Node.js (v14 or higher recommended)
-
-MongoDB (local or cloud instance)
-
-Admin
-
-Login via /AdminLogin.html
-
-Setup Instructions
-1. Clone the repository
-git clone <repo-url>
-cd AAI_Hardware
-2. Install dependencies
-npm install
-
-This will install all required dependencies and devDependencies as listed in package.json:
-
-Dependencies:
-
-express
-
-mongoose
-
-body-parser
-
-cors
-
-dotenv
-
-helmet
-
-express-session
-
-express-mongo-sanitize
-
-bcrypt
-
-chart.js
-
-pdfkit
-
-Dev Dependencies:
-
-nodemon
-
-tailwindcss
-
-autoprefixer
-
-postcss
-
-concurrently
-
-@tailwindcss/forms
-
-@tailwindcss/container-queries
-
-Note: pdfkit is used for PDF export features. Keep it installed if you use PDF export.
-
-3. Configure MongoDB
-
-Ensure MongoDB is running and update the connection string in .env:
-
-MONGO_URI=<your-mongodb-connection-string>
-Running the Application
-Start the server and Tailwind in development mode:
-npm run dev
-Run only the server:
-npm run server
-Run only Tailwind CSS watcher:
-npm run tailwind
-
-The app will be available at:
-
-http://localhost:5000
-
-(or the port specified in your .env config)
-
-Authentication APIs
-Endpoint	Method	Description
-/api/superadminlogin	POST	Superadmin login
-/api/reset-password	POST	Reset password (by username or emp_id)
-Inventory & Ticket APIs
-Endpoint	Method	Description
-/api/inventory/filter-options	GET	Get inventory filter options
-/api/tickets	GET	List all hardware requests (tickets)
-/api/tickets/user/:emp_id	GET	Get requests for a specific user
-/api/tickets/:id/status	PUT	Update ticket status
-/api/issues	GET	List all maintenance/issue requests
-/api/issues/filter-options	GET	Get issue filter options
-/api/issues/:id/priority	PUT	Update issue priority
-/api/issues/:id/technician-status	PUT	Update technician status for issue
-/api/issue-requests	GET	List all user issue requests (admin)
-/api/issue-requests/user/:emp_id	GET	List issue requests for a user
-/api/issue-requests/:id	GET	Get single issue request
-/api/issue-requests	POST	Create new issue request
-/api/issue-requests/:id	PUT	Update issue request (admin)
-/api/issue-requests/:id	DELETE	Delete issue request
-/api/dashboard/stats	GET	Dashboard statistics (requests, charts)
-/api/allocations/employee/:emp_id	GET	Get hardware allocations for employee
-/api/hardware/asset/:assetId	GET	Get hardware details by asset ID
-...	...	...
-
-See routes/ for full API details and more endpoints (settings, profile, exports, etc.).
-
+---
 
 ## Frontend Pages
 
