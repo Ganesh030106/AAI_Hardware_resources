@@ -59,22 +59,25 @@ login_system/
  - **.env**: Environment variables (not committed).
  - **src/**: Tailwind input CSS.
 
- - Secure authentication for users, admins, and superadmins
- - Hardware inventory management (add, update, track stock)
- - Hardware request and issue submission (by users)
- - Admin approval and management of requests/issues
- - Vendor and purchase management
- - PDF/CSV/Excel export of inventory and requests
- - User/admin dashboards with statistics and charts
- - Profile and settings management (password, theme, etc.)
- - Responsive, modern UI (Tailwind CSS)
- - Superadmin user management (promote/demote/delete users)
- - Password migration/reset scripts for admin use
+### **Project Points**
 
+      - Secure authentication for users, admins, and superadmins
+      - Hardware inventory management (add, update, track stock)
+      - Hardware request and issue submission (by users)
+      - Admin approval and management of requests/issues
+      - Vendor and purchase management
+      - PDF/CSV/Excel export of inventory and requests
+      - User/admin dashboards with statistics and charts
+      - Profile and settings management (password, theme, etc.)
+      - Responsive, modern UI (Tailwind CSS)
+      - Superadmin user management (promote/demote/delete users)
+      - Password migration/reset scripts for admin use
 
  Node.js (v14 or higher recommended)
  MongoDB (local or cloud instance)
+ 
 ### Admin
+
 - Login via `/AdminLogin.html`
  1. Clone the repository:
     ```sh
@@ -214,7 +217,7 @@ The app will be available at `http://localhost:5000` (default) or the port speci
 
 ## Example API Usage
 
-### User Login
+### User Login Example
 ```http
 POST /api/user-login
 Content-Type: application/json
@@ -225,7 +228,7 @@ Content-Type: application/json
 }
 ```
 
-### Admin Login
+### Admin Login Example
 ```http
 POST /api/login
 Content-Type: application/json
