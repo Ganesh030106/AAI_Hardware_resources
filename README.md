@@ -43,21 +43,21 @@
 
 **AAI_Hardware Resources** is a full-stack web application for managing IT hardware resources, requests, and issues within an organization. It provides separate interfaces and workflows for administrators and regular users, supporting authentication, inventory management, request/issue tracking, and reporting.
 
-login_system/
- - **model/**: Mongoose schemas for users, hardware, issues, requests, vendors, purchases, allocation.
- - **public/**: Frontend HTML, JS, and CSS files for all admin/user interfaces. Includes:
-  - **css/**: Tailwind output and custom styles
-  - **js/**: All frontend JS modules (admin/user dashboards, login, requests, etc.)
-  - HTML pages for admin, user, and superadmin
- - **routes/**: Express route modules for authentication, dashboard, inventory, issues, requests, profile, settings, tickets, user main, user issue, user request, etc.
- - **server.js**: Main Express server setup, MongoDB connection, and route mounting.
- - **migratepass.js**: Script to migrate/rehash all user passwords (for upgrades).
- - **resetpassword.js**: Script to reset a user's password (manual admin tool).
- - **tailwind.config.js**: Tailwind CSS configuration.
- - **package.json**: Project dependencies and scripts.
- - **package-lock.json**: Dependency lock file.
- - **.env**: Environment variables (not committed).
- - **src/**: Tailwind input CSS.
+    login_system/
+     - **model/**: Mongoose schemas for users, hardware, issues, requests, vendors, purchases, allocation.
+     - **public/**: Frontend HTML, JS, and CSS files for all admin/user interfaces. Includes:
+      - **css/**: Tailwind output and custom styles
+      - **js/**: All frontend JS modules (admin/user dashboards, login, requests, etc.)
+      - HTML pages for admin, user, and superadmin
+     - **routes/**: Express route modules for authentication, dashboard, inventory, issues, requests, profile, settings, tickets, user main, user issue, user request, etc.
+     - **server.js**: Main Express server setup, MongoDB connection, and route mounting.
+     - **migratepass.js**: Script to migrate/rehash all user passwords (for upgrades).
+     - **resetpassword.js**: Script to reset a user's password (manual admin tool).
+     - **tailwind.config.js**: Tailwind CSS configuration.
+     - **package.json**: Project dependencies and scripts.
+     - **package-lock.json**: Dependency lock file.
+     - **.env**: Environment variables (not committed).
+     - **src/**: Tailwind input CSS.
 
 ### **Project Points**
 
@@ -109,24 +109,25 @@ login_system/
  npm run tailwind
  ```
  The app will be available at `http://localhost:5000` (default) or the port specified in your `.env` config.
-| `/api/inventory/filter-options`        | GET    | Get inventory filter options                 |
-| `/api/tickets`                        | GET    | List all hardware requests (tickets)         |
-| `/api/tickets/user/:emp_id`           | GET    | Get requests for a specific user             |
-| `/api/tickets/:id/status`             | PUT    | Update ticket status                         |
-| `/api/issues`                         | GET    | List all maintenance/issue requests          |
-| `/api/issues/filter-options`           | GET    | Get issue filter options                     |
-| `/api/issues/:id/priority`            | PUT    | Update issue priority                        |
-| `/api/issues/:id/technician-status`   | PUT    | Update technician status for issue           |
-| `/api/issue-requests`                 | GET    | List all user issue requests (admin)         |
-| `/api/issue-requests/user/:emp_id`    | GET    | List issue requests for a user               |
-| `/api/issue-requests/:id`             | GET    | Get single issue request                     |
-| `/api/issue-requests`                 | POST   | Create new issue request                     |
-| `/api/issue-requests/:id`             | PUT    | Update issue request (admin)                 |
-| `/api/issue-requests/:id`             | DELETE | Delete issue request                         |
-| `/api/dashboard/stats`                | GET    | Dashboard statistics (requests, charts)      |
-| `/api/allocations/employee/:emp_id`   | GET    | Get hardware allocations for employee        |
-| `/api/hardware/asset/:assetId`        | GET    | Get hardware details by asset ID             |
-| ...                                   | ...    | ...                                          |
+ 
+     | `/api/inventory/filter-options`        | GET    | Get inventory filter options                 |
+     | `/api/tickets`                        | GET    | List all hardware requests (tickets)         |
+     | `/api/tickets/user/:emp_id`           | GET    | Get requests for a specific user             |
+     | `/api/tickets/:id/status`             | PUT    | Update ticket status                         |
+     | `/api/issues`                         | GET    | List all maintenance/issue requests          |
+     | `/api/issues/filter-options`           | GET    | Get issue filter options                     |
+     | `/api/issues/:id/priority`            | PUT    | Update issue priority                        |
+     | `/api/issues/:id/technician-status`   | PUT    | Update technician status for issue           |
+     | `/api/issue-requests`                 | GET    | List all user issue requests (admin)         |
+     | `/api/issue-requests/user/:emp_id`    | GET    | List issue requests for a user               |
+     | `/api/issue-requests/:id`             | GET    | Get single issue request                     |
+     | `/api/issue-requests`                 | POST   | Create new issue request                     |
+     | `/api/issue-requests/:id`             | PUT    | Update issue request (admin)                 |
+     | `/api/issue-requests/:id`             | DELETE | Delete issue request                         |
+     | `/api/dashboard/stats`                | GET    | Dashboard statistics (requests, charts)      |
+     | `/api/allocations/employee/:emp_id`   | GET    | Get hardware allocations for employee        |
+     | `/api/hardware/asset/:assetId`        | GET    | Get hardware details by asset ID             |
+     | ...                                   | ...    | ...                                          |
 
 See `routes/` for full API details and more endpoints (settings, profile, exports, etc.).
 
