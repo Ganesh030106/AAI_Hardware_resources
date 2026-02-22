@@ -42,35 +42,34 @@
 ## Project Structure
 
 **AAI_Hardware Resources** is a full-stack web application for managing IT hardware resources, requests, and issues within an organization. It provides separate interfaces and workflows for administrators and regular users, supporting authentication, inventory management, request/issue tracking, and reporting.
-```
+
 login_system/
- **model/**: Mongoose schemas for users, hardware, issues, requests, vendors, purchases, allocation.
- **public/**: Frontend HTML, JS, and CSS files for all admin/user interfaces. Includes:
+ - **model/**: Mongoose schemas for users, hardware, issues, requests, vendors, purchases, allocation.
+ - **public/**: Frontend HTML, JS, and CSS files for all admin/user interfaces. Includes:
   - **css/**: Tailwind output and custom styles
   - **js/**: All frontend JS modules (admin/user dashboards, login, requests, etc.)
   - HTML pages for admin, user, and superadmin
- **routes/**: Express route modules for authentication, dashboard, inventory, issues, requests, profile, settings, tickets, user main, user issue, user request, etc.
- **server.js**: Main Express server setup, MongoDB connection, and route mounting.
- **migratepass.js**: Script to migrate/rehash all user passwords (for upgrades).
- **resetpassword.js**: Script to reset a user's password (manual admin tool).
- **tailwind.config.js**: Tailwind CSS configuration.
- **package.json**: Project dependencies and scripts.
- **package-lock.json**: Dependency lock file.
- **.env**: Environment variables (not committed).
- **src/**: Tailwind input CSS.
-├── routes/        # Express route handlers (RESTful APIs)
-├── server.js      # Main Express server (entry point)
- Secure authentication for users, admins, and superadmins
- Hardware inventory management (add, update, track stock)
- Hardware request and issue submission (by users)
- Admin approval and management of requests/issues
- Vendor and purchase management
- PDF/CSV/Excel export of inventory and requests
- User/admin dashboards with statistics and charts
- Profile and settings management (password, theme, etc.)
- Responsive, modern UI (Tailwind CSS)
- Superadmin user management (promote/demote/delete users)
- Password migration/reset scripts for admin use
+ - **routes/**: Express route modules for authentication, dashboard, inventory, issues, requests, profile, settings, tickets, user main, user issue, user request, etc.
+ - **server.js**: Main Express server setup, MongoDB connection, and route mounting.
+ - **migratepass.js**: Script to migrate/rehash all user passwords (for upgrades).
+ - **resetpassword.js**: Script to reset a user's password (manual admin tool).
+ - **tailwind.config.js**: Tailwind CSS configuration.
+ - **package.json**: Project dependencies and scripts.
+ - **package-lock.json**: Dependency lock file.
+ - **.env**: Environment variables (not committed).
+ - **src/**: Tailwind input CSS.
+
+ - Secure authentication for users, admins, and superadmins
+ - Hardware inventory management (add, update, track stock)
+ - Hardware request and issue submission (by users)
+ - Admin approval and management of requests/issues
+ - Vendor and purchase management
+ - PDF/CSV/Excel export of inventory and requests
+ - User/admin dashboards with statistics and charts
+ - Profile and settings management (password, theme, etc.)
+ - Responsive, modern UI (Tailwind CSS)
+ - Superadmin user management (promote/demote/delete users)
+ - Password migration/reset scripts for admin use
 
 
  Node.js (v14 or higher recommended)
@@ -128,7 +127,6 @@ login_system/
 
 See `routes/` for full API details and more endpoints (settings, profile, exports, etc.).
 
----
 
 ## Frontend Pages
 
