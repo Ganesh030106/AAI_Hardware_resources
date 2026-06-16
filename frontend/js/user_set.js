@@ -7,7 +7,8 @@
 // ==========================================
 
 // API BASE URL
-const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
+const API_BASE = window.location.origin;
+
 
 let showToast; // will be dynamically imported on page load
 

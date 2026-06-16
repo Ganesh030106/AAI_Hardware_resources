@@ -5,7 +5,8 @@
 // ==========================================
 
 //API BASE URL
-const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
+const API_BASE = window.location.origin;
+
 
 // --- API & STATE ---
 const API_URL = `${API_BASE}/api/tickets/user`; // GET /api/tickets/user/:emp_id

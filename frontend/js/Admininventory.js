@@ -18,7 +18,8 @@ function closeExportModal() {
     modal.classList.remove('flex');
 }
 
-const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
+const API_BASE = window.location.origin;
+
 
 // --- CHART INSTANCE ---
 let stockBarChart = null;

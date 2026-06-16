@@ -3,7 +3,8 @@
 
 let showToast; // will be dynamically imported on page load
 
-const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
+const API_BASE = window.location.origin;
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const resultDiv = document.getElementById('prediction-result');
