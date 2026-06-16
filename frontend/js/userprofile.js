@@ -8,7 +8,7 @@
 // ==========================================
 
 // API BASE URL
-const API_BASE="https://app-aai-hardware-resources-backend.onrender.com";
+const API_BASE = window.API_BASE || "";
 
 const user = JSON.parse(sessionStorage.getItem("user"));
 let originalData = {};
