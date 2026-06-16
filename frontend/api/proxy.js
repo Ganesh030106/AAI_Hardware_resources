@@ -24,10 +24,14 @@ export default async function handler(req, res) {
 
         const backendResponse = await fetch(targetUrl, options);
 
-        // Forward response headers
+        // Forward response headers, excluding compression/encoding headers that Node fetch already decompressed
         backendResponse.headers.forEach((value, key) => {
-            res.setHeader(key, value);
+            const lowerKey = key.toLowerCase();
+            if (!['content-encoding', 'content-length', 'transfer-encoding', 'connection'].includes(lowerKey)) {
+                res.setHeader(key, value);
+            }
         });
+
 
         res.status(backendResponse.status);
 
