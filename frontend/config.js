@@ -112,18 +112,3 @@ function togglePasswordVisibility(btn) {
         if (icon) icon.textContent = 'visibility_off';
     }
 }
-
-// ==========================================
-//      GLOBAL API BASE CONFIGURATION
-// ==========================================
-// Dynamically resolve backend base URL to hide it from frontend files.
-(function configureApiBase() {
-    const isLocal = window.location.hostname === 'localhost' || 
-                    window.location.hostname === '127.0.0.1' || 
-                    window.location.protocol === 'file:';
-    
-    // On Vercel, we use relative paths to trigger Vercel Rewrites.
-    // For local dev, fallback to localStorage or default to local backend.
-    window.API_BASE = localStorage.getItem('API_BASE') || 
-                      (isLocal ? 'http://localhost:3000' : '');
-})();

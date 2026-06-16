@@ -4,7 +4,7 @@
    ADMIN DASHBOARD PAGE SCRIPT
 ========================= */
 
-const API_BASE = window.API_BASE || "";
+const API_BASE = "https://app-aai-hardware-resources-backend.onrender.com";
 
 // --- 1. AUTH CHECK & GET USER DATA ---
 
