@@ -1,6 +1,5 @@
 {
-  "cleanUrls": true,
   "rewrites": [
-    { "source": "/((?!assets|favicon.ico|logo.jpeg).*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
