@@ -11,3 +11,5 @@ services:
         placeholder: "Your MongoDB connection string (e.g. mongodb+srv://...)"
       - key: NODE_ENV
         value: production
+      - key: SERVE_STATIC
+        value: "false"

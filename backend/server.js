@@ -10,7 +10,13 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// Serve static frontend files if explicitly enabled (e.g. for combined local testing)
+const shouldServeStatic = process.env.SERVE_STATIC === 'true';
+if (shouldServeStatic) {
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+}
+
 app.disable('x-powered-by');
 
 // MongoDB
@@ -36,15 +42,27 @@ app.use('/api/requests', require('./routes/user_request'));
 app.use('/api', require('./routes/user_main'));
 app.use('/api/issue-requests', require('./routes/user_issue'));
 
-// React SPA fallback
-app.get(/.*/, (req, res) => {
-  const indexPath = path.join(__dirname, '../frontend/dist/index.html');
-  if (require('fs').existsSync(indexPath)) {
-    res.sendFile(indexPath);
-  } else {
-    res.json({ message: "AssertIQ Backend API is running." });
-  }
-});
+if (shouldServeStatic) {
+  // React SPA fallback for combined hosting
+  app.get(/.*/, (req, res) => {
+    const indexPath = path.join(__dirname, '../frontend/dist/index.html');
+    if (require('fs').existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.json({ message: "AssertIQ Backend API is running." });
+    }
+  });
+} else {
+  // Strictly Backend API Fallbacks
+  app.get('/', (req, res) => {
+    res.json({ status: "ok", message: "AssertIQ Backend API is running." });
+  });
+
+  // Unmatched API/route request fallback
+  app.use((req, res) => {
+    res.status(404).json({ error: "Not Found", message: `Cannot ${req.method} ${req.path}` });
+  });
+}
 
 // Server
 const PORT = Number(process.env.PORT) || 3000;
