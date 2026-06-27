@@ -38,7 +38,12 @@ app.use('/api/issue-requests', require('./routes/user_issue'));
 
 // React SPA fallback
 app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  const indexPath = path.join(__dirname, '../frontend/dist/index.html');
+  if (require('fs').existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.json({ message: "AssertIQ Backend API is running." });
+  }
 });
 
 // Server

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: assertiq-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        sync: false
+        placeholder: "Your MongoDB connection string (e.g. mongodb+srv://...)"
+      - key: NODE_ENV
+        value: production
