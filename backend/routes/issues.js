@@ -464,6 +464,23 @@ router.post("/:id/comments", async (req, res) => {
 				});
 				await newNotif.save();
 			}
+			if (author_role === "Admin" || author_role === "Superadmin") {
+				const commentSnippet = `Admin ${author_name} commented on ticket (ID: #${req.params.id.substring(req.params.id.length - 8).toUpperCase()}): "${comment.substring(0, 40)}${comment.length > 40 ? '...' : ''}"`;
+				if (issue.emp_id) {
+					const newNotif = new Notification({
+						recipient_id: issue.emp_id,
+						message: commentSnippet
+					});
+					await newNotif.save();
+				}
+				if (issue.assigned_to) {
+					const newNotif = new Notification({
+						recipient_id: issue.assigned_to,
+						message: commentSnippet
+					});
+					await newNotif.save();
+				}
+			}
 		}
 
 		res.status(201).json(newComment);
@@ -530,6 +547,30 @@ router.get("/admin/live-ops", async (req, res) => {
 });
 
 // ==========================================
+//      ADMIN: DISPATCH ALERT TO TECHNICIAN
+// ==========================================
+// POST /api/issues/admin/dispatch-alert
+router.post("/admin/dispatch-alert", async (req, res) => {
+	try {
+		const { tech_id, message } = req.body;
+		if (!tech_id || !message) {
+			return res.status(400).json({ message: "tech_id and message are required" });
+		}
+
+		const newNotification = new Notification({
+			recipient_id: tech_id,
+			message: `[ALERT] ${message}`
+		});
+		await newNotification.save();
+
+		res.status(201).json({ success: true, notification: newNotification });
+	} catch (err) {
+		console.error("Error dispatching alert:", err);
+		res.status(500).json({ message: err.message });
+	}
+});
+
+// ==========================================
 //      TECHNICIAN: PERFORMANCE STATS
 // ==========================================
 // GET /api/issues/technician/stats
@@ -543,6 +584,13 @@ router.get("/technician/stats", async (req, res) => {
 		const resolved = await IssueRequest.countDocuments({ assigned_to: tech_id, technician_status: "Resolved" });
 		const checkIns = await Attendance.countDocuments({ emp_id: tech_id, status: "Present" });
 
+		const totalDaysLogged = await Attendance.countDocuments({ emp_id: tech_id });
+		const presentDays = await Attendance.countDocuments({ emp_id: tech_id, status: "Present" });
+		
+		const resolutionRate = totalAssigned > 0 ? (resolved / totalAssigned) : 0.85;
+		const attendanceRate = totalDaysLogged > 0 ? (presentDays / totalDaysLogged) : 0.90;
+		const efficiencyScore = Math.round((resolutionRate * 0.6 + attendanceRate * 0.4) * 100);
+
 		const categoryChartData = await IssueRequest.aggregate([
 			{ $match: { assigned_to: tech_id, technician_status: "Resolved" } },
 			{ $group: { _id: "$category", count: { $sum: 1 } } }
@@ -553,7 +601,8 @@ router.get("/technician/stats", async (req, res) => {
 				totalAssigned,
 				inProgress,
 				resolved,
-				checkIns
+				checkIns,
+				efficiencyScore
 			},
 			categoryChartData
 		});

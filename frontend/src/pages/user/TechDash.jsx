@@ -29,6 +29,7 @@ export default function TechDash() {
   const [comments, setComments] = useState([]);
   const [newCommentText, setNewCommentText] = useState('');
   const [isPostingComment, setIsPostingComment] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,6 +37,8 @@ export default function TechDash() {
 
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
+  const [checkedSteps, setCheckedSteps] = useState({});
+  const commentsEndRef = useRef(null);
 
   useEffect(() => {
     if (!user || user.role !== 'Technician') {
@@ -48,11 +51,11 @@ export default function TechDash() {
     fetchStats();
     fetchShiftHistory();
 
-    // Refresh issues and stats list periodically (every 15s)
+    // Refresh issues and stats list periodically (every 10s)
     const interval = setInterval(() => {
       fetchAssignedIssues();
       fetchStats();
-    }, 15000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [user, navigate]);
@@ -67,13 +70,29 @@ export default function TechDash() {
     setCurrentPage(1);
   }, [issues, statusFilter]);
 
-  // Load comments when drawer ticket changes
+  // Load comments when drawer ticket changes & set up 5s polling
   useEffect(() => {
+    let interval;
     if (selectedIssue) {
       fetchComments(selectedIssue._id);
+      
+      interval = setInterval(() => {
+        fetchComments(selectedIssue._id);
+      }, 5000); // 5 seconds polling
+
+      const stored = localStorage.getItem(`checklist_${selectedIssue._id}`);
+      if (stored) {
+        setCheckedSteps(JSON.parse(stored));
+      } else {
+        setCheckedSteps({});
+      }
     } else {
       setComments([]);
+      setCheckedSteps({});
     }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [selectedIssue]);
 
   // Update chart elements when theme changes
@@ -89,6 +108,22 @@ export default function TechDash() {
       chartInstance.current.update();
     }
   }, [theme]);
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        fetchAttendanceStatus(),
+        fetchAssignedIssues(),
+        fetchStats(),
+        fetchShiftHistory()
+      ]);
+    } catch (err) {
+      console.error("Error refreshing data:", err);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const fetchAttendanceStatus = async () => {
     try {
@@ -294,6 +329,52 @@ export default function TechDash() {
     setCurrentPage(prev => Math.min(Math.max(prev + dir, 1), totalPages));
   };
 
+  const getChecklistSteps = (issue) => {
+    if (!issue) return [];
+    const category = (issue.category || '').toLowerCase();
+    const recommendation = (issue.aianalysis?.recommendation || '').toLowerCase();
+    
+    if (category.includes('network') || category.includes('wifi') || recommendation.includes('network')) {
+      return [
+        "Verify physical connections and cable integrity",
+        "Check router/switch configuration and status lights",
+        "Run ping diagnostics and check local DNS resolution",
+        "Perform bandwidth test and verify throughput speed"
+      ];
+    } else if (category.includes('software') || category.includes('operating system') || recommendation.includes('patch') || recommendation.includes('slow')) {
+      return [
+        "Inspect active process logs and CPU/RAM utilization",
+        "Clear cache, temp logs, and scan for malware",
+        "Check for conflicting software or pending updates",
+        "Apply patch, reboot system, and verify application functionality"
+      ];
+    } else if (category.includes('hardware') || category.includes('computer') || category.includes('laptop') || recommendation.includes('inspection')) {
+      return [
+        "Perform physical visual inspection of the device",
+        "Test individual hardware modules (RAM, Storage, PSU)",
+        "Replace or clean faulty hardware components",
+        "Run post-boot diagnostic test to verify stable operation"
+      ];
+    } else {
+      return [
+        "Review reporter description and isolate the problem",
+        "Perform diagnostic verification of the affected asset",
+        "Apply corrective configuration or repair patch",
+        "Conduct user validation test and confirm resolution"
+      ];
+    }
+  };
+
+  const scrollToBottom = () => {
+    commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (selectedIssue) {
+      scrollToBottom();
+    }
+  }, [comments]);
+
   const getPriorityClass = (priority) => {
     switch (priority) {
       case 'High':
@@ -345,10 +426,20 @@ export default function TechDash() {
               Welcome back, <strong className="text-blue-600 dark:text-blue-400">{user?.name || user?.username}</strong>. Manage your maintenance and service requests.
             </p>
           </div>
+          <button
+            onClick={handleManualRefresh}
+            disabled={isRefreshing}
+            className="animated-btn p-2.5 rounded-xl bg-white dark:bg-[#1a202c] border border-[#e7ebf3] dark:border-[#2a3441] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm flex items-center justify-center cursor-pointer"
+            title="Refresh Dashboard"
+          >
+            <span className={`material-symbols-outlined text-[20px] ${isRefreshing ? 'animate-spin' : ''}`}>
+              sync
+            </span>
+          </button>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <div className="bg-white dark:bg-[#1a202c] p-5 rounded-xl border border-[#e7ebf3] dark:border-[#2a3441] shadow-sm flex items-center gap-4">
             <div className="size-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center flex-shrink-0">
               <span className="material-symbols-outlined">assignment</span>
@@ -386,6 +477,28 @@ export default function TechDash() {
             <div>
               <p className="text-[10px] sm:text-xs text-text-muted-light dark:text-gray-400 font-bold uppercase tracking-wider">Check-in Days</p>
               <h3 className="text-2xl font-black mt-1 text-[#0d121b] dark:text-white leading-none">{stats.checkIns}</h3>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-[#1a202c] p-5 rounded-xl border border-[#e7ebf3] dark:border-[#2a3441] shadow-sm flex items-center gap-4 col-span-2 md:col-span-1">
+            <div className="size-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 flex items-center justify-center flex-shrink-0">
+              <span className="material-symbols-outlined">star</span>
+            </div>
+            <div>
+              <p className="text-[10px] sm:text-xs text-text-muted-light dark:text-gray-400 font-bold uppercase tracking-wider">Efficiency Score</p>
+              <div className="flex items-center gap-1.5 mt-1">
+                <h3 className="text-2xl font-black text-[#0d121b] dark:text-white leading-none">{stats.efficiencyScore || 0}%</h3>
+                <div className="flex text-amber-500 text-xs">
+                  {Array.from({ length: 5 }).map((_, i) => {
+                    const rating = (stats.efficiencyScore || 0) / 20;
+                    return (
+                      <span key={i} className="material-symbols-outlined text-[14px]">
+                        {i < Math.floor(rating) ? 'star' : i < rating ? 'star_half' : 'star_outline'}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -678,7 +791,7 @@ export default function TechDash() {
                   <div className="bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/50 dark:border-blue-800/30 p-5 rounded-xl space-y-3">
                     <h4 className="text-xs font-black text-blue-700 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-[18px]">psychology</span>
-                      AI DIAGNOSTIC PROTOCOL
+                      AI DIAGNOSTIC PROTOCOL & REPAIR CHECKLIST
                     </h4>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
@@ -693,6 +806,32 @@ export default function TechDash() {
                     <div>
                       <span className="text-xs text-[#4c669a] dark:text-gray-400 font-medium">Diagnostic Reason:</span>
                       <p className="text-xs text-gray-700 dark:text-gray-300 mt-1 italic">"{selectedIssue.aianalysis.reason || "N/A"}"</p>
+                    </div>
+                    
+                    <div className="mt-4 pt-3 border-t border-blue-200/30 dark:border-blue-800/20 space-y-2">
+                      <span className="text-xs text-[#4c669a] dark:text-gray-400 font-bold uppercase tracking-wider">Interactive Repair Checklist</span>
+                      <div className="space-y-1.5 mt-1.5">
+                        {getChecklistSteps(selectedIssue).map((step, idx) => {
+                          const isChecked = !!checkedSteps[idx];
+                          return (
+                            <label key={idx} className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-blue-500/5 dark:hover:bg-blue-400/5 cursor-pointer transition-colors text-xs text-gray-700 dark:text-gray-300">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => {
+                                  const updated = { ...checkedSteps, [idx]: !isChecked };
+                                  setCheckedSteps(updated);
+                                  localStorage.setItem(`checklist_${selectedIssue._id}`, JSON.stringify(updated));
+                                }}
+                                className="mt-0.5 rounded text-blue-600 focus:ring-blue-500 bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700"
+                              />
+                              <span className={isChecked ? 'line-through text-gray-400 dark:text-gray-500' : ''}>
+                                {step}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -734,6 +873,7 @@ export default function TechDash() {
                         </div>
                       ))
                     )}
+                    <div ref={commentsEndRef} />
                   </div>
 
                   {/* Post comment form */}

@@ -30,6 +30,8 @@ export default function AdIssue() {
 
   // Live Ops & Comments states
   const [liveOps, setLiveOps] = useState([]);
+  const [liveOpsSearch, setLiveOpsSearch] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [comments, setComments] = useState([]);
   const [newCommentText, setNewCommentText] = useState('');
@@ -294,6 +296,45 @@ export default function AdIssue() {
     }
   };
 
+  const handleSendAlert = async (techId, name) => {
+    const msg = window.prompt(`Enter priority alert message for technician ${name}:`);
+    if (!msg || !msg.trim()) return;
+
+    try {
+      const res = await fetch('/api/issues/admin/dispatch-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tech_id: techId, message: msg.trim() })
+      });
+      if (res.ok) {
+        alert(`Alert dispatched to ${name}`);
+      } else {
+        const errData = await res.json();
+        alert(errData.message || 'Failed to dispatch alert');
+      }
+    } catch (err) {
+      console.error('Error dispatching alert:', err);
+      alert('Server error dispatching alert');
+    }
+  };
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        loadIssues(currentPage),
+        loadFilterOptions(),
+        loadIssueStats(),
+        loadPresentTechnicians(),
+        loadLiveOps()
+      ]);
+    } catch (err) {
+      console.error("Error refreshing data:", err);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   const analyzeWithAI = async (issueId) => {
     if (aiLoading[issueId]) return;
 
@@ -329,11 +370,14 @@ export default function AdIssue() {
     loadLiveOps();
 
     const interval = setInterval(() => {
+      loadIssues(currentPage);
       loadLiveOps();
-    }, 15000);
+      loadIssueStats();
+      loadPresentTechnicians();
+    }, 10000); // Polling interval set to 10 seconds for all components
 
     return () => clearInterval(interval);
-  }, []);
+  }, [currentPage]);
 
   // Fetch issues when filter options change
   useEffect(() => {
@@ -375,7 +419,17 @@ export default function AdIssue() {
             </h2>
             <p className="text-[#4c669a] text-base font-medium dark:text-text-muted-dark">Manage reported hardware Maintenance Requests</p>
           </div>
-          <div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleManualRefresh}
+              disabled={isRefreshing}
+              className="animated-btn p-2.5 rounded-xl bg-white dark:bg-[#151c2b] border border-[#cfd7e7] dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm flex items-center justify-center cursor-pointer"
+              title="Refresh Data"
+            >
+              <span className={`material-symbols-outlined text-[20px] ${isRefreshing ? 'animate-spin' : ''}`}>
+                sync
+              </span>
+            </button>
             <Link 
               to="/html/Ad-ticket.html"
               className="animated-btn inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm shadow-blue-600/30 transition-all"
@@ -404,20 +458,35 @@ export default function AdIssue() {
 
         {/* Live Operations Monitor Section */}
         <section className="bg-white dark:bg-[#151c2b] p-5 rounded-xl border border-[#cfd7e7] dark:border-gray-800 shadow-sm flex flex-col gap-4">
-          <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3">
+          <div className="flex flex-wrap items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3 gap-2">
             <h3 className="text-sm font-bold text-[#0d121b] dark:text-white uppercase flex items-center gap-1.5">
               <span className="material-symbols-outlined text-green-500">sensors</span>
               Live Operations Monitor
             </h3>
-            <span className="text-xs text-[#4c669a] dark:text-gray-400">Real-time Technician Workloads</span>
+            <div className="flex items-center gap-3">
+              <input
+                type="text"
+                placeholder="Search technicians..."
+                value={liveOpsSearch}
+                onChange={(e) => setLiveOpsSearch(e.target.value)}
+                className="px-3 py-1.5 text-xs bg-white dark:bg-[#1a202c] border border-gray-300 dark:border-slate-700 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600 outline-none"
+              />
+              <span className="text-xs text-[#4c669a] dark:text-gray-400">Real-time Technician Workloads</span>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {liveOps.length === 0 ? (
+            {liveOps.filter(op => 
+              op.name.toLowerCase().includes(liveOpsSearch.toLowerCase()) || 
+              op.emp_id.toLowerCase().includes(liveOpsSearch.toLowerCase())
+            ).length === 0 ? (
               <div className="col-span-full py-4 text-center text-xs text-text-muted-light dark:text-gray-400">
-                No technicians registered in the system.
+                No matching technicians found.
               </div>
             ) : (
-              liveOps.map((op, idx) => (
+              liveOps.filter(op => 
+                op.name.toLowerCase().includes(liveOpsSearch.toLowerCase()) || 
+                op.emp_id.toLowerCase().includes(liveOpsSearch.toLowerCase())
+              ).map((op, idx) => (
                 <div key={idx} className="bg-background-light dark:bg-gray-900/40 p-4 rounded-xl border border-gray-100 dark:border-gray-800/80 flex flex-col gap-2 relative overflow-hidden">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-sm text-[#0d121b] dark:text-white truncate max-w-[120px]">{op.name}</span>
@@ -444,6 +513,15 @@ export default function AdIssue() {
                       <p className="font-bold text-sm text-green-600">{op.resolvedCount} resolved</p>
                     </div>
                   </div>
+                  {op.isPresent && (
+                    <button
+                      onClick={() => handleSendAlert(op.emp_id, op.name)}
+                      className="w-full mt-2 py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-950/40 text-red-600 dark:text-red-400 font-bold rounded-lg text-[11px] flex items-center justify-center gap-1 transition-colors border border-transparent cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">campaign</span>
+                      Send Priority Alert
+                    </button>
+                  )}
                 </div>
               ))
             )}
@@ -606,7 +684,7 @@ export default function AdIssue() {
                               View Details &amp; Activity
                             </button>
 
-                            {techStatus === 'unassigned' && (
+                            {techStatus === 'unassigned' && priority === 'pending' && (
                               <button 
                                 onClick={() => analyzeWithAI(issue._id)}
                                 disabled={aiLoading[issue._id]}

@@ -28,36 +28,52 @@ router.post("/:id", async (req, res) => {
             });
         }
 
+        if (
+            !issue.priority ||
+            issue.priority.toLowerCase() !== "pending"
+        ) {
+            return res.status(403).json({
+                message: "AI analysis allowed only when priority is pending"
+            });
+        }
 
-        let aiPriority = "Low";
-        let aiRecommendation = "Monitor";
-        let aiReason = "No critical indicators detected.";
 
         const category = (issue.category || "").toLowerCase();
-        const combinedText = (
-            (issue.issue || "") +
-            " " +
-            (issue.issue_description || "") +
-            " " +
-            (issue.priority || "")
-        ).toLowerCase();
+        const maintenance = (issue.issue || "").toLowerCase();
+        const description = (issue.description || "").toLowerCase();
+
+        const combinedText = `${category} ${maintenance} ${description}`;
+
+        let aiPriority = "Low";
+        let aiRecommendation = "Monitor status and schedule visual check if issue persists.";
+        let aiReason = "No high-severity critical or medium-severity warning indicators identified.";
+
+        const highPriorityRegex = /critical|urgent|crash|down|failure|not working|broken|damage|dead|corrupted|smoke|fire|spark|burnt|melt|leak|explosion|overheating|overheat|high heat|high temp|no power|dead battery/;
+        const mediumPriorityRegex = /slow|error|lag|disconnect|hang|freeze|warn|malfunction|reboot|stuck|heat|heating|temp|temperature|noise|flicker|flickering|beep|battery|hot|warm|drain|charge|charging|fan/;
 
         // 🔥 Keyword escalation
-        if (/critical|urgent|crash|down|failure|not working/.test(combinedText)) {
+        if (highPriorityRegex.test(combinedText)) {
+            const matchedWord = combinedText.match(highPriorityRegex)[0];
             aiPriority = "High";
-            aiRecommendation = "Immediate technician assignment recommended.";
-            aiReason = "Critical keywords detected.";
+            aiRecommendation = "Immediate technician assignment and physical inspection recommended.";
+            aiReason = `Critical indicator ("${matchedWord}") detected in the reported Category, Maintenance, or Description.`;
         }
-        else if (/slow|error|lag|disconnect/.test(combinedText)) {
+        else if (mediumPriorityRegex.test(combinedText)) {
+            const matchedWord = combinedText.match(mediumPriorityRegex)[0];
             aiPriority = "Medium";
-            aiRecommendation = "Technician inspection advised.";
-            aiReason = "Performance-related issue detected.";
+            aiRecommendation = "Standard technician troubleshooting and diagnostics advised.";
+            aiReason = `Stability/performance indicator ("${matchedWord}") identified in the reported Category, Maintenance, or Description.`;
         }
 
         // 🌐 Category-based boost
         if (category.includes("network") || category.includes("server")) {
-            if (aiPriority === "Low") aiPriority = "Medium";
-            aiReason += " Related to critical infrastructure.";
+            if (aiPriority === "Low") {
+                aiPriority = "Medium";
+                aiRecommendation = "Standard technician troubleshooting and diagnostics advised.";
+                aiReason = "Issue is related to critical infrastructure (network/server).";
+            } else {
+                aiReason += " Issue is related to critical infrastructure.";
+            }
         }
 
         issue.aianalysis = {

@@ -15,7 +15,8 @@ const NotificationSchema = new mongoose.Schema({
     },
     created_at: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        expires: 172800
     }
 }, {
     versionKey: false,

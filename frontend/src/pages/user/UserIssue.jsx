@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Layout from '../../components/Layout';
@@ -12,12 +12,25 @@ export default function UserIssue() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentFilter, setCurrentFilter] = useState('All');
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Details Modal and comments states
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [comments, setComments] = useState([]);
   const [newCommentText, setNewCommentText] = useState('');
   const [isPostingComment, setIsPostingComment] = useState(false);
+
+  const commentsEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (selectedIssue) {
+      scrollToBottom();
+    }
+  }, [comments]);
 
   const itemsPerPage = 5;
 
@@ -39,7 +52,7 @@ export default function UserIssue() {
       fetchComments(issueId);
       const interval = setInterval(() => {
         fetchComments(issueId);
-      }, 10000);
+      }, 5000); // 5 seconds polling window
       return () => clearInterval(interval);
     } else {
       setComments([]);
@@ -72,26 +85,39 @@ export default function UserIssue() {
     }
   };
 
+  const fetchRequests = async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
+    try {
+      const response = await fetch(`/api/issue-requests/user/${user.emp_id}`);
+      if (!response.ok) throw new Error("Fetch failed");
+      const data = await response.json();
+      setAllRequests(data);
+    } catch (error) {
+      console.error("Error fetching issue data:", error);
+    } finally {
+      if (showLoading) setIsLoading(false);
+    }
+  };
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchRequests(false);
+    setIsRefreshing(false);
+  };
+
   useEffect(() => {
     if (!user || !user.emp_id) {
       navigate('/html/UserLogin.html');
       return;
     }
 
-    const fetchRequests = async () => {
-      try {
-        const response = await fetch(`/api/issue-requests/user/${user.emp_id}`);
-        if (!response.ok) throw new Error("Fetch failed");
-        const data = await response.json();
-        setAllRequests(data);
-      } catch (error) {
-        console.error("Error fetching issue data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    fetchRequests(true);
 
-    fetchRequests();
+    const interval = setInterval(() => {
+      fetchRequests(false);
+    }, 10000); // Auto-refresh list every 10 seconds
+
+    return () => clearInterval(interval);
   }, [user, navigate]);
 
   // Handle filtering
@@ -141,6 +167,16 @@ export default function UserIssue() {
             <div className="px-6 py-4 border-b border-[#e7ebf3] dark:border-[#2a3441] flex flex-wrap items-center justify-between gap-4 bg-[#f8f9fc] dark:bg-[#1f2937]/50">
               <h3 className="text-lg font-bold text-[#0d121b] dark:text-white">Maintenance Requests</h3>
               <div className="flex items-center gap-3">
+                <button
+                  onClick={handleManualRefresh}
+                  disabled={isRefreshing}
+                  className="animated-btn p-2 rounded-lg bg-white dark:bg-[#2d3748] border border-[#e7ebf3] dark:border-[#4a5568] text-[#4c669a] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm flex items-center justify-center cursor-pointer"
+                  title="Refresh Data"
+                >
+                  <span className={`material-symbols-outlined text-[18px] ${isRefreshing ? 'animate-spin' : ''}`}>
+                    sync
+                  </span>
+                </button>
                 <select
                   id="status-filter"
                   value={currentFilter}
@@ -427,6 +463,7 @@ export default function UserIssue() {
                         </div>
                       ))
                     )}
+                    <div ref={commentsEndRef} />
                   </div>
 
                   {/* Post comment form */}

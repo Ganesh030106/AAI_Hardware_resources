@@ -80,5 +80,26 @@ app.listen(PORT, () => {
   }
 
   console.log('----------------------------------------------');
+
+  // Background task to clean up old notifications (older than 2 days)
+  const runDataCleanup = async () => {
+    try {
+      const Notification = require('./model/Notification');
+      const twoDaysAgo = new Date();
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+      const result = await Notification.deleteMany({ created_at: { $lt: twoDaysAgo } });
+      if (result.deletedCount > 0) {
+        console.log(`🧹 Data Purge: Deleted ${result.deletedCount} notifications older than 2 days.`);
+      }
+    } catch (err) {
+      console.error("❌ Failed to purge notifications:", err);
+    }
+  };
+
+  // Run immediately on boot
+  runDataCleanup();
+
+  // Run periodically every 24 hours
+  setInterval(runDataCleanup, 24 * 60 * 60 * 1000);
 });
 
